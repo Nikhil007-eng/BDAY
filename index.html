@@ -475,6 +475,288 @@
     </style>
 </head>
 <body>
+    <div class="header">
+        <h1>SECURE ACCESS</h1>
+        <p>Authentication Portal</p>
+    </div>
+
+    <div class="main-container">
+        <div id="page-1">
+            <div class="access-card">
+                <div class="card-header">
+                    <div class="lock-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h2>Enter Access Code</h2>
+                    <p>Enter your unique code to proceed</p>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <input type="password" id="passcode" class="access-input" placeholder="Enter unique code" autocomplete="off" inputmode="text">
+                </div>
+                
+                <button class="btn-access" onclick="initiateReveal()" id="access-btn">
+                    <span>VERIFY & ENTER</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                
+                <div class="error-message" id="err">Invalid access code</div>
+            </div>
+        </div>
+
+        <div id="page-2">
+            <div class="celebration-card">
+                <div class="hero-title">
+                    HAPPY<br>
+                    <span>BIRTHDAY</span><br>
+                    BRO.
+                </div>
+                
+                <div class="birthday-icon">🎉</div>
+                
+                <div class="message-container">
+                    <div id="typewriter" class="typewriter"></div>
+                    <div class="cursor" id="cursor"></div>
+                </div>
+                
+                <div class="success-note">
+                    <i class="fas fa-check-circle"></i> Access granted successfully
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Secure Portal v1.0</p>
+        <a href="https://yourportfolio.com" target="_blank" class="dev-btn">
+            <i class="fas fa-code"></i>
+            <span>Developer</span>
+        </a>
+    </div>
+
+    <script>
+        const message = "To the one who has been my day-one protector and partner in chaos. Today isn't just a celebration of your age, it's a celebration of your character. Keep leveling up, keep breaking boundaries. You're the GOAT, Bro.";
+        const correctCode = "MSD07"; // Fixed: Using MSD07 as the correct code
+        
+        // Audio for wrong code entry
+        const errorAudio = new Audio('audio provided by the user: http://googleusercontent.com/file_content/0');
+        
+        console.log("Correct code is:", correctCode); // Debug log
+        
+        // Make input focus better on mobile
+        document.getElementById('passcode').addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            this.focus();
+        }, { passive: false });
+        
+        // Enter key support
+        document.getElementById('passcode').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                initiateReveal();
+            }
+        });
+        
+        // Focus input on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('passcode').focus();
+        });
+        
+        function initiateReveal() {
+            const code = document.getElementById('passcode').value.trim();
+            const errorElement = document.getElementById('err');
+            const page1 = document.getElementById('page-1');
+            const page2 = document.getElementById('page-2');
+            const accessBtn = document.getElementById('access-btn');
+            
+            console.log("Entered code:", code); // Debug log
+            
+            // Clear previous error
+            errorElement.classList.remove('show');
+            
+            // Show loading state
+            const originalText = accessBtn.innerHTML;
+            accessBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>VERIFYING...</span>';
+            accessBtn.disabled = true;
+            
+            // Simulate verification delay
+            setTimeout(() => {
+                // Case-insensitive comparison and trim whitespace
+                if(code.toUpperCase() === correctCode.toUpperCase()) {
+                    console.log("Code accepted!"); // Debug log
+                    
+                    // Success - transition to page 2
+                    page1.classList.add('page-exit');
+                    
+                    setTimeout(() => {
+                        page1.style.display = 'none';
+                        page2.style.display = 'block';
+                        startTyping();
+                        
+                        // Hide keyboard on mobile
+                        document.getElementById('passcode').blur();
+                    }, 500);
+                } else {
+                    console.log("Code rejected. Expected:", correctCode, "Got:", code); // Debug log
+                    
+                    // Play error audio
+                    errorAudio.play().catch(e => console.log('Audio play failed:', e));
+                    
+                    // Error state
+                    errorElement.classList.add('show');
+                    document.getElementById('passcode').value = '';
+                    document.getElementById('passcode').focus();
+                    
+                    // Add error animation
+                    page1.style.transform = 'translateX(10px)';
+                    setTimeout(() => {
+                        page1.style.transform = 'translateX(-10px)';
+                        setTimeout(() => {
+                            page1.style.transform = 'translateX(0)';
+                        }, 50);
+                    }, 50);
+                    
+                    // Reset button
+                    accessBtn.innerHTML = originalText;
+                    accessBtn.disabled = false;
+                }
+            }, 800);
+        }
+        
+        function startTyping() {
+            let i = 0;
+            const element = document.getElementById('typewriter');
+            const cursor = document.getElementById('cursor');
+            element.innerHTML = '';
+            
+            function type() {
+                if (i < message.length) {
+                    const char = message.charAt(i);
+                    element.innerHTML += char === ' ' ? '&nbsp;' : char;
+                    i++;
+                    
+                    // Scroll to keep cursor in view on mobile
+                    const container = element.parentElement;
+                    container.scrollTop = container.scrollHeight;
+                    
+                    // Natural typing speed
+                    const speed = Math.random() * 15 + 30;
+                    setTimeout(type, speed);
+                } else {
+                    // Typing complete
+                    cursor.style.animation = 'blink 1s infinite';
+                    
+                    // Ensure container is scrolled to bottom
+                    const container = element.parentElement;
+                    container.scrollTop = container.scrollHeight;
+                       padding: 15px;
+            }
+            
+            .header {
+                margin: 15px 0 10px;
+            }
+            
+            .header h1 {
+                font-size: 1.6rem;
+            }
+            
+            .access-card, .celebration-card {
+                padding: 25px 18px;
+            }
+            
+            .hero-title {
+                font-size: 1.9rem;
+            }
+            
+            .hero-title span {
+                font-size: 2.4rem;
+            }
+            
+            .message-container {
+                padding: 15px;
+                min-height: 140px;
+                max-height: 250px;
+                font-size: 0.9rem;
+            }
+            
+            .typewriter {
+                font-size: 0.9rem;
+                line-height: 1.4;
+            }
+            
+            .birthday-icon {
+                font-size: 2.5rem;
+                margin: 15px 0;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .hero-title {
+                font-size: 1.7rem;
+            }
+            
+            .hero-title span {
+                font-size: 2.1rem;
+            }
+            
+            .message-container {
+                padding: 12px;
+                min-height: 130px;
+                max-height: 220px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            body {
+                padding: 30px;
+            }
+            
+            .header {
+                margin: 30px 0 25px;
+            }
+            
+            .access-card, .celebration-card {
+                padding: 35px 30px;
+                border-radius: 18px;
+            }
+            
+            .hero-title {
+                font-size: 2.8rem;
+            }
+            
+            .hero-title span {
+                font-size: 3.5rem;
+            }
+            
+            .message-container {
+                padding: 22px;
+                min-height: 180px;
+                max-height: 350px;
+            }
+        }
+
+        /* Prevent zoom on input focus for iOS */
+        @media screen and (max-width: 768px) {
+            input, select, textarea {
+                font-size: 16px;
+            }
+        }
+
+        /* Safe area insets for notch phones */
+        @supports (padding: max(0px)) {
+            body {
+                padding-left: max(20px, env(safe-area-inset-left));
+                padding-right: max(20px, env(safe-area-inset-right));
+                padding-top: max(20px, env(safe-area-inset-top));
+                padding-bottom: max(20px, env(safe-area-inset-bottom));
+            }
+        }
+    </style>
+</head>
+<body>
     <!-- Header -->
     <div class="header">
         <h1>SECURE ACCESS</h1>
