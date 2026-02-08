@@ -25,28 +25,23 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        html {
+        html, body {
             height: 100%;
-            touch-action: manipulation;
+            background: var(--bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
         }
 
         body {
-            min-height: 100%;
-            background: var(--bg);
-            color: var(--text-main);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             display: flex;
             flex-direction: column;
             padding: 20px;
-            overflow-x: hidden;
-            overflow-y: auto;
         }
 
-        /* Header */
         .header {
             text-align: center;
             margin: 20px 0 15px;
-            padding: 0 10px;
         }
 
         .header h1 {
@@ -55,30 +50,18 @@
             background: linear-gradient(to right, #fff 30%, var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
         }
 
-        .header p {
-            color: var(--text-dim);
-            font-size: 0.9rem;
-            font-weight: 300;
-        }
-
-        /* Main Container */
         .main-container {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
             width: 100%;
             max-width: 450px;
             margin: 0 auto;
-            padding-bottom: 20px;
         }
 
-        /* Access Card */
         .access-card {
             width: 100%;
             background: var(--card-bg);
@@ -86,45 +69,23 @@
             border-radius: 16px;
             padding: 30px 20px;
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            margin-bottom: 20px;
-        }
-
-        .card-header {
-            text-align: center;
-            margin-bottom: 25px;
         }
 
         .lock-icon {
             font-size: 2rem;
             color: var(--accent);
             margin-bottom: 12px;
-            display: inline-block;
+            display: block;
+            text-align: center;
             animation: pulse 2s infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 
-        .card-header h2 {
-            font-weight: 600;
-            font-size: 1.2rem;
-            margin-bottom: 6px;
-        }
-
-        .card-header p {
-            color: var(--text-dim);
-            font-size: 0.85rem;
-            line-height: 1.4;
-        }
-
-        /* Input Group */
         .input-group {
             position: relative;
-            margin-bottom: 20px;
+            margin: 20px 0;
         }
 
         .input-icon {
@@ -133,7 +94,6 @@
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-dim);
-            z-index: 2;
         }
 
         .access-input {
@@ -143,13 +103,8 @@
             padding: 16px 16px 16px 45px;
             color: var(--text-main);
             border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 500;
-            letter-spacing: 1px;
+            font-size: 16px; /* Required to prevent iOS zoom */
             outline: none;
-            transition: all 0.3s ease;
-            -webkit-appearance: none;
-            appearance: none;
         }
 
         .access-input:focus {
@@ -157,12 +112,6 @@
             box-shadow: 0 0 0 2px var(--accent-glow);
         }
 
-        .access-input::placeholder {
-            color: var(--text-dim);
-            font-weight: 400;
-        }
-
-        /* Button */
         .btn-access {
             width: 100%;
             background: linear-gradient(135deg, var(--accent) 0%, #00b896 100%);
@@ -173,60 +122,36 @@
             font-weight: 600;
             font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 8px;
-            margin-top: 10px;
         }
 
-        .btn-access:active {
-            transform: scale(0.98);
-        }
-
-        .btn-access:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-
-        /* Error Message */
         .error-message {
             color: var(--error);
             font-size: 0.8rem;
             text-align: center;
             margin-top: 12px;
-            min-height: 18px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            padding: 0 10px;
+            display: none;
         }
 
-        .error-message.show {
-            opacity: 1;
-        }
+        .error-message.show { display: block; }
 
-        /* Celebration Page */
         #page-2 {
             display: none;
             width: 100%;
             animation: fadeIn 0.8s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .celebration-card {
             width: 100%;
             background: var(--card-bg);
-            border: 1px solid var(--card-border);
             border-radius: 16px;
             padding: 25px 20px;
             text-align: center;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
         }
 
         .hero-title {
@@ -234,31 +159,7 @@
             font-size: 2.2rem;
             line-height: 1;
             margin-bottom: 20px;
-            background: linear-gradient(to bottom, #fff 40%, var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            hyphens: auto;
-        }
-
-        .hero-title span {
-            display: block;
-            font-size: 2.8rem;
-            line-height: 0.9;
-            margin-top: 8px;
-        }
-
-        .birthday-icon {
-            font-size: 2.8rem;
-            margin: 20px 0;
-            display: inline-block;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+            color: var(--accent);
         }
 
         .message-container {
@@ -267,263 +168,40 @@
             background: rgba(10, 10, 15, 0.5);
             border-radius: 12px;
             border-left: 3px solid var(--accent);
-            min-height: 160px;
-            max-height: 300px;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
             text-align: left;
-            font-size: 0.95rem;
         }
 
-        .message-container::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .message-container::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 2px;
-        }
-
-        .message-container::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 2px;
-        }
-
-        .typewriter {
-            font-size: 0.95rem;
-            line-height: 1.5;
-            color: var(--text-dim);
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            hyphens: auto;
-        }
-
-        .cursor {
-            display: inline-block;
-            width: 2px;
-            height: 1rem;
-            background-color: var(--accent);
-            margin-left: 2px;
-            animation: blink 1s infinite;
-            vertical-align: middle;
-        }
-
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 20px 0 15px;
-            color: var(--text-dim);
-            font-size: 0.8rem;
-            width: 100%;
-            margin-top: auto;
-        }
-
-        .dev-btn {
-            color: var(--text-dim);
-            text-decoration: none;
-            font-size: 0.75rem;
-            padding: 10px 18px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 25px;
-            transition: all 0.3s ease;
-            background: rgba(20, 20, 30, 0.7);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 12px;
-        }
-
-        .dev-btn:active {
-            background: rgba(0, 212, 170, 0.1);
-            border-color: var(--accent);
-        }
-
-        /* Success Message */
-        .success-note {
-            color: var(--accent);
-            font-size: 0.85rem;
-            margin-top: 15px;
-            font-weight: 500;
-        }
-
-        /* Page Transitions */
-        .page-exit {
-            animation: slideOut 0.5s ease forwards;
-        }
-
-        @keyframes slideOut {
-            from { 
-                opacity: 1;
-                transform: translateY(0);
-            }
-            to { 
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-        }
-
-        /* Mobile Optimizations */
-        @media (max-width: 380px) {
-            body {
-                padding: 15px;
-            }
-            
-            .header {
-                margin: 15px 0 10px;
-            }
-            
-            .header h1 {
-                font-size: 1.6rem;
-            }
-            
-            .access-card, .celebration-card {
-                padding: 25px 18px;
-            }
-            
-            .hero-title {
-                font-size: 1.9rem;
-            }
-            
-            .hero-title span {
-                font-size: 2.4rem;
-            }
-            
-            .message-container {
-                padding: 15px;
-                min-height: 140px;
-                max-height: 250px;
-                font-size: 0.9rem;
-            }
-            
-            .typewriter {
-                font-size: 0.9rem;
-                line-height: 1.4;
-            }
-            
-            .birthday-icon {
-                font-size: 2.5rem;
-                margin: 15px 0;
-            }
-        }
-
-        @media (max-width: 320px) {
-            .hero-title {
-                font-size: 1.7rem;
-            }
-            
-            .hero-title span {
-                font-size: 2.1rem;
-            }
-            
-            .message-container {
-                padding: 12px;
-                min-height: 130px;
-                max-height: 220px;
-            }
-        }
-
-        @media (min-width: 768px) {
-            body {
-                padding: 30px;
-            }
-            
-            .header {
-                margin: 30px 0 25px;
-            }
-            
-            .access-card, .celebration-card {
-                padding: 35px 30px;
-                border-radius: 18px;
-            }
-            
-            .hero-title {
-                font-size: 2.8rem;
-            }
-            
-            .hero-title span {
-                font-size: 3.5rem;
-            }
-            
-            .message-container {
-                padding: 22px;
-                min-height: 180px;
-                max-height: 350px;
-            }
-        }
-
-        /* Prevent zoom on input focus for iOS */
-        @media screen and (max-width: 768px) {
-            input, select, textarea {
-                font-size: 16px;
-            }
-        }
-
-        /* Safe area insets for notch phones */
-        @supports (padding: max(0px)) {
-            body {
-                padding-left: max(20px, env(safe-area-inset-left));
-                padding-right: max(20px, env(safe-area-inset-right));
-                padding-top: max(20px, env(safe-area-inset-top));
-                padding-bottom: max(20px, env(safe-area-inset-bottom));
-            }
-        }
+        .footer { text-align: center; margin-top: auto; padding: 20px 0; color: var(--text-dim); }
     </style>
 </head>
 <body>
+
     <div class="header">
         <h1>SECURE ACCESS</h1>
         <p>Authentication Portal</p>
     </div>
 
     <div class="main-container">
-        <div id="page-1">
+        <div id="page-1" style="width: 100%;">
             <div class="access-card">
-                <div class="card-header">
-                    <div class="lock-icon">
-                        <i class="fas fa-lock"></i>
-                    </div>
-                    <h2>Enter Access Code</h2>
-                    <p>Enter your unique code to proceed</p>
-                </div>
-                
+                <i class="fas fa-lock lock-icon"></i>
                 <div class="input-group">
-                    <div class="input-icon">
-                        <i class="fas fa-key"></i>
-                    </div>
+                    <i class="fas fa-key input-icon"></i>
                     <input type="password" id="passcode" class="access-input" placeholder="Enter unique code" autocomplete="off" inputmode="text">
                 </div>
-                
                 <button class="btn-access" onclick="initiateReveal()" id="access-btn">
-                    <span>VERIFY & ENTER</span>
-                    <i class="fas fa-arrow-right"></i>
+                    VERIFY & ENTER <i class="fas fa-arrow-right"></i>
                 </button>
-                
                 <div class="error-message" id="err">Invalid access code</div>
             </div>
         </div>
 
         <div id="page-2">
             <div class="celebration-card">
-                <div class="hero-title">
-                    HAPPY<br>
-                    <span>BIRTHDAY</span><br>
-                    BRO.
-                </div>
-                
-                <div class="birthday-icon">🎉</div>
-                
+                <div class="hero-title">HAPPY<br>BIRTHDAY<br>BRO.</div>
+                <div style="font-size: 2.8rem; margin: 20px 0;">🎉</div>
                 <div class="message-container">
-                    <div id="typewriter" class="typewriter"></div>
-                    <div class="cursor" id="cursor"></div>
-                </div>
-                
-                <div class="success-note">
-                    <i class="fas fa-check-circle"></i> Access granted successfully
+                    <div id="typewriter" style="line-height: 1.5; color: var(--text-dim);"></div>
                 </div>
             </div>
         </div>
@@ -531,433 +209,58 @@
 
     <div class="footer">
         <p>Secure Portal v1.0</p>
-        <a href="https://yourportfolio.com" target="_blank" class="dev-btn">
-            <i class="fas fa-code"></i>
-            <span>Developer</span>
-        </a>
     </div>
 
     <script>
         const message = "To the one who has been my day-one protector and partner in chaos. Today isn't just a celebration of your age, it's a celebration of your character. Keep leveling up, keep breaking boundaries. You're the GOAT, Bro.";
-        const correctCode = "MSD07"; // Fixed: Using MSD07 as the correct code
+        const correctCode = "MSD07";
         
-        // Audio for wrong code entry
-        const errorAudio = new Audio('audio provided by the user: http://googleusercontent.com/file_content/0');
-        
-        console.log("Correct code is:", correctCode); // Debug log
-        
-        // Make input focus better on mobile
-        document.getElementById('passcode').addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            this.focus();
-        }, { passive: false });
-        
-        // Enter key support
-        document.getElementById('passcode').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                initiateReveal();
-            }
-        });
-        
-        // Focus input on page load
-        window.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('passcode').focus();
-        });
-        
+        // Use the actual file name provided
+        const errorAudio = new Audio('Fahh_-_Sound_Effect___SowaSFX(256k).mp3');
+
         function initiateReveal() {
-            const code = document.getElementById('passcode').value.trim();
+            const codeInput = document.getElementById('passcode');
+            const code = codeInput.value.trim();
             const errorElement = document.getElementById('err');
-            const page1 = document.getElementById('page-1');
-            const page2 = document.getElementById('page-2');
-            const accessBtn = document.getElementById('access-btn');
-            
-            console.log("Entered code:", code); // Debug log
-            
-            // Clear previous error
-            errorElement.classList.remove('show');
-            
-            // Show loading state
-            const originalText = accessBtn.innerHTML;
-            accessBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>VERIFYING...</span>';
-            accessBtn.disabled = true;
-            
-            // Simulate verification delay
-            setTimeout(() => {
-                // Case-insensitive comparison and trim whitespace
-                if(code.toUpperCase() === correctCode.toUpperCase()) {
-                    console.log("Code accepted!"); // Debug log
-                    
-                    // Success - transition to page 2
-                    page1.classList.add('page-exit');
-                    
-                    setTimeout(() => {
-                        page1.style.display = 'none';
-                        page2.style.display = 'block';
-                        startTyping();
-                        
-                        // Hide keyboard on mobile
-                        document.getElementById('passcode').blur();
-                    }, 500);
-                } else {
-                    console.log("Code rejected. Expected:", correctCode, "Got:", code); // Debug log
-                    
-                    // Play error audio
-                    errorAudio.play().catch(e => console.log('Audio play failed:', e));
-                    
-                    // Error state
-                    errorElement.classList.add('show');
-                    document.getElementById('passcode').value = '';
-                    document.getElementById('passcode').focus();
-                    
-                    // Add error animation
-                    page1.style.transform = 'translateX(10px)';
-                    setTimeout(() => {
-                        page1.style.transform = 'translateX(-10px)';
-                        setTimeout(() => {
-                            page1.style.transform = 'translateX(0)';
-                        }, 50);
-                    }, 50);
-                    
-                    // Reset button
-                    accessBtn.innerHTML = originalText;
-                    accessBtn.disabled = false;
-                }
-            }, 800);
+            const btn = document.getElementById('access-btn');
+
+            if(code.toUpperCase() === correctCode) {
+                // Success
+                codeInput.blur(); // Hide keyboard
+                document.getElementById('page-1').style.display = 'none';
+                document.getElementById('page-2').style.display = 'block';
+                startTyping();
+            } else {
+                // Wrong Code - Play Sound immediately
+                errorAudio.currentTime = 0;
+                errorAudio.play().catch(e => console.log("Audio play failed", e));
+                
+                errorElement.classList.add('show');
+                codeInput.value = '';
+                // Focus again to keep keyboard up for another try
+                codeInput.focus();
+                
+                setTimeout(() => errorElement.classList.remove('show'), 2000);
+            }
         }
-        
+
         function startTyping() {
             let i = 0;
             const element = document.getElementById('typewriter');
-            const cursor = document.getElementById('cursor');
-            element.innerHTML = '';
-            
             function type() {
                 if (i < message.length) {
-                    const char = message.charAt(i);
-                    element.innerHTML += char === ' ' ? '&nbsp;' : char;
+                    element.innerHTML += message.charAt(i);
                     i++;
-                    
-                    // Scroll to keep cursor in view on mobile
-                    const container = element.parentElement;
-                    container.scrollTop = container.scrollHeight;
-                    
-                    // Natural typing speed
-                    const speed = Math.random() * 15 + 30;
-                    setTimeout(type, speed);
-                } else {
-                    // Typing complete
-                    cursor.style.animation = 'blink 1s infinite';
-                    
-                    // Ensure container is scrolled to bottom
-                    const container = element.parentElement;
-                    container.scrollTop = container.scrollHeight;
-                       padding: 15px;
-            }
-            
-            .header {
-                margin: 15px 0 10px;
-            }
-            
-            .header h1 {
-                font-size: 1.6rem;
-            }
-            
-            .access-card, .celebration-card {
-                padding: 25px 18px;
-            }
-            
-            .hero-title {
-                font-size: 1.9rem;
-            }
-            
-            .hero-title span {
-                font-size: 2.4rem;
-            }
-            
-            .message-container {
-                padding: 15px;
-                min-height: 140px;
-                max-height: 250px;
-                font-size: 0.9rem;
-            }
-            
-            .typewriter {
-                font-size: 0.9rem;
-                line-height: 1.4;
-            }
-            
-            .birthday-icon {
-                font-size: 2.5rem;
-                margin: 15px 0;
-            }
-        }
-
-        @media (max-width: 320px) {
-            .hero-title {
-                font-size: 1.7rem;
-            }
-            
-            .hero-title span {
-                font-size: 2.1rem;
-            }
-            
-            .message-container {
-                padding: 12px;
-                min-height: 130px;
-                max-height: 220px;
-            }
-        }
-
-        @media (min-width: 768px) {
-            body {
-                padding: 30px;
-            }
-            
-            .header {
-                margin: 30px 0 25px;
-            }
-            
-            .access-card, .celebration-card {
-                padding: 35px 30px;
-                border-radius: 18px;
-            }
-            
-            .hero-title {
-                font-size: 2.8rem;
-            }
-            
-            .hero-title span {
-                font-size: 3.5rem;
-            }
-            
-            .message-container {
-                padding: 22px;
-                min-height: 180px;
-                max-height: 350px;
-            }
-        }
-
-        /* Prevent zoom on input focus for iOS */
-        @media screen and (max-width: 768px) {
-            input, select, textarea {
-                font-size: 16px;
-            }
-        }
-
-        /* Safe area insets for notch phones */
-        @supports (padding: max(0px)) {
-            body {
-                padding-left: max(20px, env(safe-area-inset-left));
-                padding-right: max(20px, env(safe-area-inset-right));
-                padding-top: max(20px, env(safe-area-inset-top));
-                padding-bottom: max(20px, env(safe-area-inset-bottom));
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Header -->
-    <div class="header">
-        <h1>SECURE ACCESS</h1>
-        <p>Authentication Portal</p>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-container">
-        <!-- Page 1: Access Form -->
-        <div id="page-1">
-            <div class="access-card">
-                <div class="card-header">
-                    <div class="lock-icon">
-                        <i class="fas fa-lock"></i>
-                    </div>
-                    <h2>Enter Access Code</h2>
-                    <p>Enter your unique code to proceed</p>
-                </div>
-                
-                <div class="input-group">
-                    <div class="input-icon">
-                        <i class="fas fa-key"></i>
-                    </div>
-                    <input type="password" id="passcode" class="access-input" placeholder="Enter unique code" autocomplete="off" inputmode="text">
-                </div>
-                
-                <button class="btn-access" onclick="initiateReveal()" id="access-btn">
-                    <span>VERIFY & ENTER</span>
-                    <i class="fas fa-arrow-right"></i>
-                </button>
-                
-                <div class="error-message" id="err">Invalid access code</div>
-            </div>
-        </div>
-
-        <!-- Page 2: Celebration Content -->
-        <div id="page-2">
-            <div class="celebration-card">
-                <div class="hero-title">
-                    HAPPY<br>
-                    <span>BIRTHDAY</span><br>
-                    BRO.
-                </div>
-                
-                <div class="birthday-icon">🎉</div>
-                
-                <div class="message-container">
-                    <div id="typewriter" class="typewriter"></div>
-                    <div class="cursor" id="cursor"></div>
-                </div>
-                
-                <div class="success-note">
-                    <i class="fas fa-check-circle"></i> Access granted successfully
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="footer">
-        <p>Secure Portal v1.0</p>
-        <a href="https://yourportfolio.com" target="_blank" class="dev-btn">
-            <i class="fas fa-code"></i>
-            <span>Developer</span>
-        </a>
-    </div>
-
-    <script>
-        const message = "To the one who has been my day-one protector and partner in chaos. Today isn't just a celebration of your age, it's a celebration of your character. Keep leveling up, keep breaking boundaries. You're the GOAT, Bro.";
-        const correctCode = "MSD07"; // Fixed: Using MSD07 as the correct code
-        
-        console.log("Correct code is:", correctCode); // Debug log
-        
-        // Make input focus better on mobile
-        document.getElementById('passcode').addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            this.focus();
-        }, { passive: false });
-        
-        // Enter key support
-        document.getElementById('passcode').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                initiateReveal();
-            }
-        });
-        
-        // Focus input on page load
-        window.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('passcode').focus();
-        });
-        
-        function initiateReveal() {
-            const code = document.getElementById('passcode').value.trim();
-            const errorElement = document.getElementById('err');
-            const page1 = document.getElementById('page-1');
-            const page2 = document.getElementById('page-2');
-            const accessBtn = document.getElementById('access-btn');
-            
-            console.log("Entered code:", code); // Debug log
-            
-            // Clear previous error
-            errorElement.classList.remove('show');
-            
-            // Show loading state
-            const originalText = accessBtn.innerHTML;
-            accessBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>VERIFYING...</span>';
-            accessBtn.disabled = true;
-            
-            // Simulate verification delay
-            setTimeout(() => {
-                // Case-insensitive comparison and trim whitespace
-                if(code.toUpperCase() === correctCode.toUpperCase()) {
-                    console.log("Code accepted!"); // Debug log
-                    
-                    // Success - transition to page 2
-                    page1.classList.add('page-exit');
-                    
-                    setTimeout(() => {
-                        page1.style.display = 'none';
-                        page2.style.display = 'block';
-                        startTyping();
-                        
-                        // Hide keyboard on mobile
-                        document.getElementById('passcode').blur();
-                    }, 500);
-                } else {
-                    console.log("Code rejected. Expected:", correctCode, "Got:", code); // Debug log
-                    
-                    // Error state
-                    errorElement.classList.add('show');
-                    document.getElementById('passcode').value = '';
-                    document.getElementById('passcode').focus();
-                    
-                    // Add error animation
-                    page1.style.transform = 'translateX(10px)';
-                    setTimeout(() => {
-                        page1.style.transform = 'translateX(-10px)';
-                        setTimeout(() => {
-                            page1.style.transform = 'translateX(0)';
-                        }, 50);
-                    }, 50);
-                    
-                    // Reset button
-                    accessBtn.innerHTML = originalText;
-                    accessBtn.disabled = false;
-                }
-            }, 800);
-        }
-        
-        function startTyping() {
-            let i = 0;
-            const element = document.getElementById('typewriter');
-            const cursor = document.getElementById('cursor');
-            element.innerHTML = '';
-            
-            function type() {
-                if (i < message.length) {
-                    const char = message.charAt(i);
-                    element.innerHTML += char === ' ' ? '&nbsp;' : char;
-                    i++;
-                    
-                    // Scroll to keep cursor in view on mobile
-                    const container = element.parentElement;
-                    container.scrollTop = container.scrollHeight;
-                    
-                    // Natural typing speed
-                    const speed = Math.random() * 15 + 30;
-                    setTimeout(type, speed);
-                } else {
-                    // Typing complete
-                    cursor.style.animation = 'blink 1s infinite';
-                    
-                    // Ensure container is scrolled to bottom
-                    const container = element.parentElement;
-                    container.scrollTop = container.scrollHeight;
+                    setTimeout(type, 40);
                 }
             }
-            
-            // Start typing after a brief pause
-            setTimeout(type, 300);
+            type();
         }
-        
-        // Prevent form submission on enter
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && e.target.type !== 'password') {
-                e.preventDefault();
-            }
+
+        // Handle Enter key
+        document.getElementById('passcode').addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') initiateReveal();
         });
-        
-        // Handle mobile viewport resize
-        window.addEventListener('resize', function() {
-            if (document.getElementById('page-2').style.display === 'block') {
-                const container = document.querySelector('.message-container');
-                container.scrollTop = container.scrollHeight;
-            }
-        });
-        
-        // Test: Uncomment to automatically test the code
-        // document.getElementById('passcode').value = 'MSD07';
-        // setTimeout(initiateReveal, 1000);
     </script>
 </body>
 </html>
