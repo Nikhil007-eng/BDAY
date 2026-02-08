@@ -6,6 +6,7 @@
     <title>Secure Access Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --bg: #0a0a0f;
@@ -85,7 +86,7 @@
 
         .input-group {
             position: relative;
-            margin: 20px 0;
+            margin: 20px 0 8px;
         }
 
         .input-icon {
@@ -103,13 +104,22 @@
             padding: 16px 16px 16px 45px;
             color: var(--text-main);
             border-radius: 10px;
-            font-size: 16px; /* Required to prevent iOS zoom */
+            font-size: 16px;
             outline: none;
         }
 
         .access-input:focus {
             border-color: var(--accent);
             box-shadow: 0 0 0 2px var(--accent-glow);
+        }
+
+        .hint-text {
+            display: block;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            margin-bottom: 20px;
+            opacity: 0.7;
         }
 
         .btn-access {
@@ -126,6 +136,28 @@
             justify-content: center;
             align-items: center;
             gap: 8px;
+        }
+
+        /* Developer Button Styling */
+        .btn-dev {
+            margin-top: 25px;
+            background: transparent;
+            border: 1px solid var(--card-border);
+            color: var(--text-dim);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-dev:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+            background: var(--accent-glow);
         }
 
         .error-message {
@@ -182,18 +214,24 @@
     </div>
 
     <div class="main-container">
-        <div id="page-1" style="width: 100%;">
+        <div id="page-1" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
             <div class="access-card">
                 <i class="fas fa-lock lock-icon"></i>
                 <div class="input-group">
                     <i class="fas fa-key input-icon"></i>
                     <input type="password" id="passcode" class="access-input" placeholder="Enter unique code" autocomplete="off" inputmode="text">
                 </div>
+                <span class="hint-text">(hint above 785×550)</span>
+                
                 <button class="btn-access" onclick="initiateReveal()" id="access-btn">
                     VERIFY & ENTER <i class="fas fa-arrow-right"></i>
                 </button>
-                <div class="error-message" id="err">Invalid access code</div>
-            </div>
+                <div class="error-message" id="err">🫩 Do you think developer is a fool?</div>
+            </div> 
+
+            <button class="btn-dev" onclick="window.location.href='#'">
+                <i class="fas fa-code"></i> DEVELOPER
+            </button>
         </div>
 
         <div id="page-2">
@@ -215,31 +253,53 @@
         const message = "To the one who has been my day-one protector and partner in chaos. Today isn't just a celebration of your age, it's a celebration of your character. Keep leveling up, keep breaking boundaries. You're the GOAT, Bro.";
         const correctCode = "MSD07";
         
-        // Use the actual file name provided
+        const successAudio = new Audio('y2mate_xvijLIk.mp3');
         const errorAudio = new Audio('Fahh_-_Sound_Effect___SowaSFX(256k).mp3');
+
+        function fireConfetti() {
+            var duration = 3 * 1000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+              confetti({
+                particleCount: 5,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0 },
+                colors: ['#00d4aa', '#ffffff', '#00b896']
+              });
+              confetti({
+                particleCount: 5,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1 },
+                colors: ['#00d4aa', '#ffffff', '#00b896']
+              });
+
+              if (Date.now() < end) {
+                requestAnimationFrame(frame);
+              }
+            }());
+        }
 
         function initiateReveal() {
             const codeInput = document.getElementById('passcode');
             const code = codeInput.value.trim();
             const errorElement = document.getElementById('err');
-            const btn = document.getElementById('access-btn');
 
             if(code.toUpperCase() === correctCode) {
-                // Success
-                codeInput.blur(); // Hide keyboard
+                successAudio.play().catch(e => console.log("Audio play failed", e));
+                fireConfetti();
+                codeInput.blur();
                 document.getElementById('page-1').style.display = 'none';
                 document.getElementById('page-2').style.display = 'block';
                 startTyping();
             } else {
-                // Wrong Code - Play Sound immediately
                 errorAudio.currentTime = 0;
                 errorAudio.play().catch(e => console.log("Audio play failed", e));
-                
                 errorElement.classList.add('show');
                 codeInput.value = '';
-                // Focus again to keep keyboard up for another try
                 codeInput.focus();
-                
                 setTimeout(() => errorElement.classList.remove('show'), 2000);
             }
         }
@@ -257,7 +317,6 @@
             type();
         }
 
-        // Handle Enter key
         document.getElementById('passcode').addEventListener('keyup', (e) => {
             if (e.key === 'Enter') initiateReveal();
         });
