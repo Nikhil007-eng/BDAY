@@ -237,7 +237,7 @@
 
         <div id="page-2">
             <div class="celebration-card">
-                <img src="1000028728.png" alt="Birthday Image" style="width: 100%; max-width: 300px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--card-border);">
+                <img src="1000028728.png" alt="BDAY Photo" style="width: 100%; border-radius: 12px; margin-bottom: 20px;">
                 
                 <div class="hero-title">HAPPY<br>BIRTHDAY<br>BRO.</div>
                 <div style="font-size: 2.8rem; margin: 20px 0;">🎉</div>
@@ -311,6 +311,23 @@
         function startTyping() {
             let i = 0;
             const element = document.getElementById('typewriter');
+            function type() {
+                if (i < message.length) {
+                    element.innerHTML += message.charAt(i);
+                    i++;
+                    setTimeout(type, 40);
+                }
+            }
+            type();
+        }
+
+        document.getElementById('passcode').addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') initiateReveal();
+        });
+    </script>
+</body>
+</html>
+tById('typewriter');
             function type() {
                 if (i < message.length) {
                     element.innerHTML += message.charAt(i);
