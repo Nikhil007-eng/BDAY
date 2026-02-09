@@ -138,6 +138,7 @@
             gap: 8px;
         }
 
+        /* Developer Button Styling */
         .btn-dev {
             margin-top: 25px;
             background: transparent;
@@ -172,10 +173,10 @@
         #page-2 {
             display: none;
             width: 100%;
-            animation: fadeIn 1.5s ease-out;
+            animation: fadeIn 2s ease;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .celebration-card {
             width: 100%;
@@ -183,41 +184,14 @@
             border-radius: 16px;
             padding: 25px 20px;
             text-align: center;
-            border: 1px solid var(--card-border);
-        }
-
-        /* Photo Styling */
-        .photo-frame {
-            width: 85%;
-            max-width: 280px;
-            margin: 0 auto 25px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            transform: rotate(-2deg);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transition: transform 0.3s ease;
-        }
-
-        .photo-frame:hover {
-            transform: rotate(0deg) scale(1.02);
-        }
-
-        .photo-frame img {
-            width: 100%;
-            border-radius: 8px;
-            display: block;
-            filter: grayscale(20%) contrast(1.1);
         }
 
         .hero-title {
             font-weight: 800;
             font-size: 2.2rem;
-            line-height: 1.1;
+            line-height: 1;
             margin-bottom: 20px;
             color: var(--accent);
-            text-transform: uppercase;
         }
 
         .message-container {
@@ -256,27 +230,27 @@
             </div> 
 
             <button class="btn-dev" onclick="window.open('https://nikhil007-eng.github.io/xos-social-Id/', '_blank')">
-                <i class="fas fa-code"></i> DEVELOPER
-            </button>
+    <i class="fas fa-code"></i> DEVELOPER
+</button>
+
         </div>
 
         <div id="page-2">
             <div class="celebration-card">
-                <div class="photo-frame">
-                    <img src="1000028728.png" alt="Birthday Bro">
-                </div>
+                <img src="1000028728.png" alt="Birthday Image" style="width: 100%; max-width: 300px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--card-border);">
                 
                 <div class="hero-title">HAPPY<br>BIRTHDAY<br>BRO.</div>
-                <div style="font-size: 2.8rem; margin: 15px 0;">🎉</div>
+                <div style="font-size: 2.8rem; margin: 20px 0;">🎉</div>
                 <div class="message-container">
-                    <div id="typewriter" style="line-height: 1.5; color: var(--text-dim); font-size: 0.95rem;"></div>
+                    <div id="typewriter" style="line-height: 1.5; color: var(--text-dim);"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="footer">
-        <p>Secure Portal v1.1<br>for code ask developer</p>
+        <p>Secure Portal v1.0
+        for code ask developer</p>
     </div>
 
     <script>
@@ -318,6 +292,42 @@
             const errorElement = document.getElementById('err');
 
             if(code.toUpperCase() === correctCode) {
+                successAudio.play().catch(e => console.log("Audio play failed", e));
+                fireConfetti();
+                codeInput.blur();
+                document.getElementById('page-1').style.display = 'none';
+                document.getElementById('page-2').style.display = 'block';
+                startTyping();
+            } else {
+                errorAudio.currentTime = 0;
+                errorAudio.play().catch(e => console.log("Audio play failed", e));
+                errorElement.classList.add('show');
+                codeInput.value = '';
+                codeInput.focus();
+                setTimeout(() => errorElement.classList.remove('show'), 2000);
+            }
+        }
+
+        function startTyping() {
+            let i = 0;
+            const element = document.getElementById('typewriter');
+            function type() {
+                if (i < message.length) {
+                    element.innerHTML += message.charAt(i);
+                    i++;
+                    setTimeout(type, 40);
+                }
+            }
+            type();
+        }
+
+        document.getElementById('passcode').addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') initiateReveal();
+        });
+    </script>
+</body>
+</html>
+ {
                 successAudio.play().catch(e => console.log("Audio play failed", e));
                 fireConfetti();
                 codeInput.blur();
