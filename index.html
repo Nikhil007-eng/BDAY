@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Birthday Portal | XOS</title>
+    <title>XOS | Birthday Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -12,11 +12,10 @@
             --bg: #000000;
             --accent: #007aff;
             --accent-glow: rgba(0, 122, 255, 0.2);
-            --text-main: #f5f5f7;
-            --text-dim: #8a8a9e;
             --card-bg: #0a0a0a;
             --card-border: #1a1a1a;
-            --error: #ff4d6d;
+            --text-main: #f5f5f7;
+            --text-dim: #8a8a9e;
         }
 
         * {
@@ -26,18 +25,25 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* Fixed the "Swipe Up" issue by using min-height and auto overflow */
         body {
-            height: 100vh;
+            min-height: 100vh;
             background: var(--bg);
             color: var(--text-main);
             font-family: 'Space Grotesk', sans-serif;
             display: flex;
             flex-direction: column;
             padding: 20px;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto; 
         }
 
-        .header { text-align: center; margin: 40px 0 20px; }
+        .header { 
+            text-align: center; 
+            margin: 40px 0 20px; 
+            animation: slideDown 0.8s ease;
+        }
+
         .header h1 {
             font-weight: 700;
             font-size: 1.8rem;
@@ -53,11 +59,12 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             margin: 0 auto;
+            padding-bottom: 50px;
         }
 
-        /* xos1 Card Style */
+        /* xos1 Card Styles */
         .access-card {
             width: 100%;
             background: var(--card-bg);
@@ -65,10 +72,11 @@
             border-radius: 12px;
             padding: 30px 20px;
             backdrop-filter: blur(12px);
-            transition: transform 0.1s ease;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            transition: transform 0.2s ease;
         }
 
-        .access-card:active { transform: scale(0.98); }
+        .access-card:active { transform: scale(0.97); }
 
         .input-group { position: relative; margin: 20px 0; }
         
@@ -80,8 +88,10 @@
             color: var(--text-main);
             border-radius: 8px;
             font-size: 16px;
+            font-family: 'Space Grotesk', sans-serif;
             outline: none;
             text-align: center;
+            transition: border-color 0.3s ease;
         }
 
         .access-input:focus { border-color: var(--accent); }
@@ -94,11 +104,13 @@
             padding: 16px;
             border-radius: 8px;
             font-weight: 600;
+            font-size: 1rem;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 10px;
+            box-shadow: 0 4px 15px var(--accent-glow);
         }
 
         .dev-badge {
@@ -106,45 +118,70 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             color: var(--text-dim);
-            margin-top: 20px;
+            margin-top: 25px;
+            opacity: 0.6;
         }
 
-        /* Page Transitions */
+        /* Wish Page (Hidden by default) */
         #page-2 {
             display: none;
             width: 100%;
-            transform: translateY(20px);
-            animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            opacity: 0;
+            animation: xos-slide-up 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
         }
 
-        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes xos-slide-up {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
         .celebration-card {
             width: 100%;
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 16px;
-            padding: 25px 20px;
+            padding: 20px;
             text-align: center;
+        }
+
+        .wish-image {
+            width: 100%;
+            max-height: 350px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--card-border);
         }
 
         .hero-title {
             font-weight: 800;
-            font-size: 2rem;
+            font-size: 2.2rem;
             color: var(--accent);
             margin-bottom: 10px;
+            line-height: 1.1;
         }
 
-        .message-container {
+        .message-box {
             margin-top: 20px;
-            padding: 15px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 10px;
+            padding: 20px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 12px;
             text-align: left;
-            border-left: 2px solid var(--accent);
+            border-left: 3px solid var(--accent);
         }
 
-        .footer { text-align: center; padding: 20px; color: var(--text-dim); font-size: 0.7rem; }
+        .footer { 
+            text-align: center; 
+            padding: 30px; 
+            color: var(--text-dim); 
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
@@ -156,82 +193,95 @@
     <div class="main-container">
         <div id="page-1" style="width: 100%; text-align: center;">
             <div class="access-card">
-                <p style="color: var(--text-dim); font-size: 0.9rem;">Who are you?</p>
+                <p style="color: var(--text-dim); font-size: 0.9rem; letter-spacing: 1px;">AUTHENTICATE IDENTITY</p>
                 <div class="input-group">
-                    <input type="text" id="userName" class="access-input" placeholder="Enter name..." autocomplete="off">
+                    <input type="text" id="userName" class="access-input" placeholder="Enter recipient name" autocomplete="off">
                 </div>
-                <button class="btn-access" onclick="revealWish()">
-                    OPEN WISH <i class="fas fa-heart"></i>
+                <button class="btn-access" onclick="handleReveal()">
+                    INITIALIZE WISH <i class="fas fa-bolt"></i>
                 </button>
             </div>
-            <div class="dev-badge">v1.0.0 // STABLE</div>
+            <div class="dev-badge">BUILD v1.0.4 // STABLE</div>
         </div>
 
         <div id="page-2">
             <div class="celebration-card">
-                <img id="wishImg" src="" alt="Birthday" style="width: 100%; border-radius: 12px; border: 1px solid var(--card-border);">
+                <img id="wishImg" class="wish-image" src="" alt="Celebration">
                 <div class="hero-title" id="wishTitle"></div>
-                <div style="font-size: 2rem;">🎂</div>
-                <div class="message-container">
-                    <div id="typewriter" style="font-size: 0.95rem; line-height: 1.6; color: var(--text-dim);"></div>
+                <div style="font-size: 2.5rem; margin: 15px 0;">🎉</div>
+                <div class="message-box">
+                    <div id="typewriter" style="font-size: 1rem; line-height: 1.6; color: var(--text-main);"></div>
                 </div>
             </div>
+            <p style="text-align: center; color: var(--text-dim); margin-top: 20px; font-size: 0.8rem;">
+                <i class="fas fa-chevron-up"></i> Swipe up for more
+            </p>
         </div>
     </div>
 
     <div class="footer">
-        <p>© 2026 XOS INT</p>
+        <p>POWERED BY XOS INTERFACE</p>
     </div>
 
     <script>
-        const successAudio = new Audio('y2mate_xvijLIk.mp3');
+        const audio = new Audio('y2mate_xvijLIk.mp3');
 
-        function fireConfetti() {
-            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#007aff', '#ffffff'] });
+        function triggerConfetti() {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#007aff', '#ffffff', '#00d4aa']
+            });
         }
 
-        function revealWish() {
-            const name = document.getElementById('userName').value.trim().toLowerCase();
+        function handleReveal() {
+            const rawInput = document.getElementById('userName').value.trim().toLowerCase();
             const p1 = document.getElementById('page-1');
             const p2 = document.getElementById('page-2');
             const img = document.getElementById('wishImg');
             const title = document.getElementById('wishTitle');
 
-            if (name === "neeraj" || name === "niru") {
+            // Logic for Neeraj or Harshita
+            if (rawInput === "neeraj" || rawInput === "niru") {
                 img.src = "neeraj.png";
-                title.innerHTML = "HAPPY BIRTHDAY BRO";
-                startFlow(p1, p2, "To my day-one protector and partner in chaos. Keep leveling up and breaking boundaries. You're the GOAT, Bro. God bless you.");
+                title.innerHTML = "HAPPY BIRTHDAY<br>BRO";
+                proceed("To the one who has been my day-one protector and partner in chaos. Today isn't just a celebration of your age, it's a celebration of your character. Keep leveling up, keep breaking boundaries. You're the GOAT, Bro. God bless you!");
             } 
-            else if (name === "harshita") {
+            else if (rawInput === "harshita") {
                 img.src = "harshita.png";
-                title.innerHTML = "HAPPY BIRTHDAY SIS";
-                startFlow(p1, p2, "To an amazing sister. May your year be filled with success and happiness. Keep shining! God bless you, Sis.");
+                title.innerHTML = "HAPPY BIRTHDAY<br>SIS";
+                proceed("To an amazing sister who deserves the world. May this year bring you endless success, joy, and growth. Keep shining and never stop reaching for the stars. Happy Birthday! God bless you, Sis.");
             } 
             else {
-                alert("Please enter Neeraj or Harshita");
+                alert("Identity not found. Please enter Neeraj or Harshita.");
             }
-        }
 
-        function startFlow(hide, show, msg) {
-            hide.style.display = 'none';
-            show.style.display = 'block';
-            successAudio.play().catch(() => {});
-            fireConfetti();
-            
-            let i = 0;
-            const target = document.getElementById('typewriter');
-            function type() {
-                if (i < msg.length) {
-                    target.innerHTML += msg.charAt(i);
-                    i++;
-                    setTimeout(type, 40);
+            function proceed(messageText) {
+                p1.style.display = 'none';
+                p2.style.display = 'block';
+                audio.play().catch(() => console.log("Audio needs interaction"));
+                triggerConfetti();
+                
+                // Typewriter effect
+                let index = 0;
+                const speed = 45;
+                const target = document.getElementById('typewriter');
+                
+                function typeEffect() {
+                    if (index < messageText.length) {
+                        target.innerHTML += messageText.charAt(index);
+                        index++;
+                        setTimeout(typeEffect, speed);
+                    }
                 }
+                typeEffect();
             }
-            type();
         }
 
+        // Enter key support
         document.getElementById('userName').addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') revealWish();
+            if (e.key === 'Enter') handleReveal();
         });
     </script>
 </body>
