@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XOS | Birthday Portal</title>
+    <title>XOS | Celebrate</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -11,11 +11,10 @@
         :root {
             --bg: #000000;
             --accent: #007aff;
-            --accent-glow: rgba(0, 122, 255, 0.2);
             --card-bg: #0a0a0a;
-            --card-border: #1a1a1a;
-            --text-main: #f5f5f7;
-            --text-dim: #8a8a9e;
+            --border: #1a1a1a;
+            --text: #f5f5f7;
+            --dim: #8a8a9e;
         }
 
         * {
@@ -25,263 +24,219 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Fixed the "Swipe Up" issue by using min-height and auto overflow */
         body {
             min-height: 100vh;
             background: var(--bg);
-            color: var(--text-main);
+            color: var(--text);
             font-family: 'Space Grotesk', sans-serif;
             display: flex;
             flex-direction: column;
-            padding: 20px;
             overflow-x: hidden;
-            overflow-y: auto; 
+            overflow-y: auto; /* Fully scrollable */
         }
 
-        .header { 
-            text-align: center; 
-            margin: 40px 0 20px; 
-            animation: slideDown 0.8s ease;
-        }
-
-        .header h1 {
-            font-weight: 700;
-            font-size: 1.8rem;
-            letter-spacing: -1px;
-            background: linear-gradient(to right, #fff, var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .main-container {
-            flex: 1;
+        /* Initial identification screen */
+        #page-1 {
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 100%;
-            max-width: 420px;
-            margin: 0 auto;
-            padding-bottom: 50px;
+            justify-content: center;
+            height: 100vh;
+            padding: 20px;
         }
 
-        /* xos1 Card Styles */
-        .access-card {
+        .auth-card {
             width: 100%;
+            max-width: 360px;
             background: var(--card-bg);
-            border: 1px solid var(--card-border);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 30px 20px;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            transition: transform 0.2s ease;
+            padding: 40px 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
         }
 
-        .access-card:active { transform: scale(0.97); }
-
-        .input-group { position: relative; margin: 20px 0; }
-        
-        .access-input {
+        .auth-input {
             width: 100%;
             background: #000;
-            border: 1px solid var(--card-border);
-            padding: 16px;
-            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 18px;
+            color: #fff;
             border-radius: 8px;
-            font-size: 16px;
-            font-family: 'Space Grotesk', sans-serif;
+            margin: 20px 0;
+            font-family: inherit;
+            font-size: 1rem;
             outline: none;
             text-align: center;
-            transition: border-color 0.3s ease;
         }
 
-        .access-input:focus { border-color: var(--accent); }
+        .auth-input:focus { border-color: var(--accent); }
 
-        .btn-access {
+        .btn-main {
             width: 100%;
             background: var(--accent);
             color: #fff;
             border: none;
-            padding: 16px;
+            padding: 18px;
             border-radius: 8px;
             font-weight: 600;
-            font-size: 1rem;
             cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 15px var(--accent-glow);
+            transition: transform 0.2s;
+        }
+
+        .btn-main:active { transform: scale(0.95); }
+
+        /* Wish Section */
+        #page-2 {
+            display: none;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 10px;
+            opacity: 0;
+            animation: slideUp 0.8s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .full-photo {
+            width: 100%;
+            height: auto;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            margin-bottom: 20px;
+        }
+
+        .wish-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .wish-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+
+        .note-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-left: 2px solid var(--accent);
+            background: rgba(255,255,255,0.02);
+            text-align: left;
         }
 
         .dev-badge {
             font-size: 8px;
-            text-transform: uppercase;
             letter-spacing: 2px;
-            color: var(--text-dim);
-            margin-top: 25px;
-            opacity: 0.6;
+            text-transform: uppercase;
+            color: var(--dim);
+            margin-top: 15px;
         }
 
-        /* Wish Page (Hidden by default) */
-        #page-2 {
-            display: none;
-            width: 100%;
-            opacity: 0;
-            animation: xos-slide-up 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-
-        @keyframes xos-slide-up {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .celebration-card {
-            width: 100%;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 20px;
+        .footer {
             text-align: center;
-        }
-
-        .wish-image {
-            width: 100%;
-            max-height: 350px;
-            object-fit: cover;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border: 1px solid var(--card-border);
-        }
-
-        .hero-title {
-            font-weight: 800;
-            font-size: 2.2rem;
-            color: var(--accent);
-            margin-bottom: 10px;
-            line-height: 1.1;
-        }
-
-        .message-box {
-            margin-top: 20px;
-            padding: 20px;
-            background: rgba(255,255,255,0.02);
-            border-radius: 12px;
-            text-align: left;
-            border-left: 3px solid var(--accent);
-        }
-
-        .footer { 
-            text-align: center; 
-            padding: 30px; 
-            color: var(--text-dim); 
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+            padding: 40px 20px;
+            color: var(--dim);
+            font-size: 0.7rem;
         }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>XOS CELEBRATE</h1>
+    <div id="page-1">
+        <div class="auth-card">
+            <h2 style="font-size: 1.2rem; letter-spacing: -0.5px;">XOS IDENTITY</h2>
+            <input type="text" id="nameInput" class="auth-input" placeholder="Who are you?" autocomplete="off">
+            <button class="btn-main" onclick="reveal()">OPEN PORTAL</button>
+            <div class="dev-badge">XOS1 // STABLE BUILD</div>
+        </div>
     </div>
 
-    <div class="main-container">
-        <div id="page-1" style="width: 100%; text-align: center;">
-            <div class="access-card">
-                <p style="color: var(--text-dim); font-size: 0.9rem; letter-spacing: 1px;">AUTHENTICATE IDENTITY</p>
-                <div class="input-group">
-                    <input type="text" id="userName" class="access-input" placeholder="Enter recipient name" autocomplete="off">
-                </div>
-                <button class="btn-access" onclick="handleReveal()">
-                    INITIALIZE WISH <i class="fas fa-bolt"></i>
-                </button>
-            </div>
-            <div class="dev-badge">BUILD v1.0.4 // STABLE</div>
-        </div>
-
-        <div id="page-2">
-            <div class="celebration-card">
-                <img id="wishImg" class="wish-image" src="" alt="Celebration">
-                <div class="hero-title" id="wishTitle"></div>
+    <div id="page-2">
+        <div style="padding-top: 20px;">
+            <img id="mainPhoto" class="full-photo" src="" alt="Birthday Celebration">
+            
+            <div class="wish-content">
+                <div class="wish-title" id="titleText"></div>
                 <div style="font-size: 2.5rem; margin: 15px 0;">🎉</div>
-                <div class="message-box">
-                    <div id="typewriter" style="font-size: 1rem; line-height: 1.6; color: var(--text-main);"></div>
+                
+                <div class="note-box">
+                    <p id="typewriter" style="font-size: 1.1rem; color: var(--text); font-weight: 400;"></p>
                 </div>
             </div>
-            <p style="text-align: center; color: var(--text-dim); margin-top: 20px; font-size: 0.8rem;">
-                <i class="fas fa-chevron-up"></i> Swipe up for more
-            </p>
-        </div>
-    </div>
 
-    <div class="footer">
-        <p>POWERED BY XOS INTERFACE</p>
+            <div class="footer">
+                <p>APRIL 01, 2026</p>
+                <p style="margin-top: 10px;">PROUDLY BUILT ON XOS INTERFACE</p>
+            </div>
+        </div>
     </div>
 
     <script>
         const audio = new Audio('y2mate_xvijLIk.mp3');
 
-        function triggerConfetti() {
+        function reveal() {
+            const name = document.getElementById('nameInput').value.trim().toLowerCase();
+            const p1 = document.getElementById('page-1');
+            const p2 = document.getElementById('page-2');
+            const img = document.getElementById('mainPhoto');
+            const title = document.getElementById('titleText');
+
+            if (name === "neeraj" || name === "niru") {
+                img.src = "niru.png";
+                title.innerHTML = "HAPPY BIRTHDAY<br>BRO";
+                startProcess(p1, p2, "Happy Birthday Bro. God bless you.");
+            } 
+            else if (name === "harshita") {
+                img.src = "harshita.png";
+                title.innerHTML = "HAPPY BIRTHDAY<br>SIS";
+                startProcess(p1, p2, "Happy Birthday Sis. God bless you.");
+            } 
+            else {
+                alert("Identity unrecognized.");
+            }
+        }
+
+        function startProcess(hide, show, msg) {
+            hide.style.display = 'none';
+            show.style.display = 'block';
+            
+            // Audio & Visuals
+            audio.play().catch(() => {});
             confetti({
                 particleCount: 150,
                 spread: 70,
                 origin: { y: 0.6 },
-                colors: ['#007aff', '#ffffff', '#00d4aa']
+                colors: ['#007aff', '#ffffff']
             });
-        }
 
-        function handleReveal() {
-            const rawInput = document.getElementById('userName').value.trim().toLowerCase();
-            const p1 = document.getElementById('page-1');
-            const p2 = document.getElementById('page-2');
-            const img = document.getElementById('wishImg');
-            const title = document.getElementById('wishTitle');
-
-            // Logic for Neeraj or Harshita
-            if (rawInput === "neeraj" || rawInput === "niru") {
-                img.src = "neeraj.png";
-                title.innerHTML = "HAPPY BIRTHDAY<br>BRO";
-                proceed("To the one who has been my day-one protector and partner in chaos. Today isn't just a celebration of your age, it's a celebration of your character. Keep leveling up, keep breaking boundaries. You're the GOAT, Bro. God bless you!");
-            } 
-            else if (rawInput === "harshita") {
-                img.src = "harshita.png";
-                title.innerHTML = "HAPPY BIRTHDAY<br>SIS";
-                proceed("To an amazing sister who deserves the world. May this year bring you endless success, joy, and growth. Keep shining and never stop reaching for the stars. Happy Birthday! God bless you, Sis.");
-            } 
-            else {
-                alert("Identity not found. Please enter Neeraj or Harshita.");
-            }
-
-            function proceed(messageText) {
-                p1.style.display = 'none';
-                p2.style.display = 'block';
-                audio.play().catch(() => console.log("Audio needs interaction"));
-                triggerConfetti();
-                
-                // Typewriter effect
-                let index = 0;
-                const speed = 45;
-                const target = document.getElementById('typewriter');
-                
-                function typeEffect() {
-                    if (index < messageText.length) {
-                        target.innerHTML += messageText.charAt(index);
-                        index++;
-                        setTimeout(typeEffect, speed);
-                    }
+            // Typewriter logic
+            let i = 0;
+            const target = document.getElementById('typewriter');
+            function type() {
+                if (i < msg.length) {
+                    target.innerHTML += msg.charAt(i);
+                    i++;
+                    setTimeout(type, 50);
                 }
-                typeEffect();
             }
+            type();
         }
 
         // Enter key support
-        document.getElementById('userName').addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') handleReveal();
+        document.getElementById('nameInput').addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') reveal();
         });
     </script>
 </body>
