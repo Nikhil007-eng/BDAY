@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XOS | Celebrate</title>
+    <title>XOS | Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -32,10 +32,10 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
-            overflow-y: auto; /* Fully scrollable */
+            overflow-y: auto; /* Swipe up enabled */
         }
 
-        /* Initial identification screen */
+        /* Identity Screen */
         #page-1 {
             display: flex;
             flex-direction: column;
@@ -53,7 +53,6 @@
             border-radius: 12px;
             padding: 40px 20px;
             text-align: center;
-            backdrop-filter: blur(10px);
         }
 
         .auth-input {
@@ -81,10 +80,7 @@
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
         }
-
-        .btn-main:active { transform: scale(0.95); }
 
         /* Wish Section */
         #page-2 {
@@ -92,22 +88,23 @@
             width: 100%;
             max-width: 500px;
             margin: 0 auto;
-            padding: 10px;
+            padding: 15px;
             opacity: 0;
-            animation: slideUp 0.8s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+            animation: xos-slide-up 0.8s cubic-bezier(0.2, 1, 0.3, 1) forwards;
         }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
+        @keyframes xos-slide-up {
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* FIXED: Ratio-consistent Full Photo */
         .full-photo {
             width: 100%;
-            height: auto;
-            border-radius: 16px;
+            height: auto; /* Maintains original aspect ratio */
+            display: block;
+            border-radius: 12px;
             border: 1px solid var(--border);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
             margin-bottom: 20px;
         }
 
@@ -117,31 +114,24 @@
             border-radius: 16px;
             padding: 30px 20px;
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
         }
 
         .wish-title {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 800;
             color: var(--accent);
-            margin-bottom: 10px;
-            line-height: 1;
+            line-height: 1.1;
+            margin-bottom: 15px;
         }
 
         .note-box {
-            margin-top: 20px;
-            padding: 15px;
-            border-left: 2px solid var(--accent);
-            background: rgba(255,255,255,0.02);
-            text-align: left;
-        }
-
-        .dev-badge {
-            font-size: 8px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--dim);
             margin-top: 15px;
+            padding: 15px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 8px;
+            text-align: left;
+            border-left: 2px solid var(--accent);
         }
 
         .footer {
@@ -149,6 +139,7 @@
             padding: 40px 20px;
             color: var(--dim);
             font-size: 0.7rem;
+            letter-spacing: 1px;
         }
     </style>
 </head>
@@ -156,29 +147,28 @@
 
     <div id="page-1">
         <div class="auth-card">
-            <h2 style="font-size: 1.2rem; letter-spacing: -0.5px;">XOS IDENTITY</h2>
-            <input type="text" id="nameInput" class="auth-input" placeholder="Who are you?" autocomplete="off">
-            <button class="btn-main" onclick="reveal()">OPEN PORTAL</button>
-            <div class="dev-badge">XOS1 // STABLE BUILD</div>
+            <h2 style="font-size: 1rem; color: var(--dim); letter-spacing: 2px;">XOS ACCESS</h2>
+            <input type="text" id="nameInput" class="auth-input" placeholder="Enter Name" autocomplete="off">
+            <button class="btn-main" onclick="reveal()">VIEW WISH</button>
         </div>
     </div>
 
     <div id="page-2">
-        <div style="padding-top: 20px;">
-            <img id="mainPhoto" class="full-photo" src="" alt="Birthday Celebration">
+        <div style="padding-top: 10px;">
+            <img id="mainPhoto" class="full-photo" src="" alt="Birthday Image">
             
             <div class="wish-content">
                 <div class="wish-title" id="titleText"></div>
-                <div style="font-size: 2.5rem; margin: 15px 0;">🎉</div>
+                <div style="font-size: 2.5rem; margin-bottom: 20px;">🎁</div>
                 
                 <div class="note-box">
-                    <p id="typewriter" style="font-size: 1.1rem; color: var(--text); font-weight: 400;"></p>
+                    <p id="typewriter" style="font-size: 1.1rem; color: var(--text);"></p>
                 </div>
             </div>
 
             <div class="footer">
                 <p>APRIL 01, 2026</p>
-                <p style="margin-top: 10px;">PROUDLY BUILT ON XOS INTERFACE</p>
+                <p style="margin-top: 10px; opacity: 0.5;">XOS INT // SECURE PORTAL</p>
             </div>
         </div>
     </div>
@@ -195,33 +185,31 @@
 
             if (name === "neeraj" || name === "niru") {
                 img.src = "niru.png";
-                title.innerHTML = "HAPPY BIRTHDAY<br>BRO";
-                startProcess(p1, p2, "Happy Birthday Bro. God bless you.");
+                title.innerHTML = "HAPPY BIRTHDAY BRO";
+                startFlow(p1, p2, "Happy Birthday Bro. God bless you.");
             } 
             else if (name === "harshita") {
                 img.src = "harshita.png";
-                title.innerHTML = "HAPPY BIRTHDAY<br>SIS";
-                startProcess(p1, p2, "Happy Birthday Sis. God bless you.");
+                title.innerHTML = "HAPPY BIRTHDAY SIS";
+                startFlow(p1, p2, "Happy Birthday Sis. God bless you.");
             } 
             else {
-                alert("Identity unrecognized.");
+                alert("Name not recognized.");
             }
         }
 
-        function startProcess(hide, show, msg) {
+        function startFlow(hide, show, msg) {
             hide.style.display = 'none';
             show.style.display = 'block';
             
-            // Audio & Visuals
             audio.play().catch(() => {});
             confetti({
                 particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 },
+                spread: 60,
+                origin: { y: 0.7 },
                 colors: ['#007aff', '#ffffff']
             });
 
-            // Typewriter logic
             let i = 0;
             const target = document.getElementById('typewriter');
             function type() {
@@ -234,7 +222,6 @@
             type();
         }
 
-        // Enter key support
         document.getElementById('nameInput').addEventListener('keyup', (e) => {
             if (e.key === 'Enter') reveal();
         });
