@@ -100,6 +100,7 @@
             background: var(--gray);
             border-radius: 20px;
             overflow: hidden;
+            margin-bottom: 20px;
         }
         .gift-reveal {
             position: absolute;
@@ -112,6 +113,14 @@
             font-size: 18px;
         }
         canvas { position: absolute; top: 0; left: 0; touch-action: none; transition: opacity 0.5s; z-index: 10; }
+
+        #claimMsg {
+            font-weight: 600;
+            color: var(--text);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.5s ease;
+        }
     </style>
 </head>
 <body>
@@ -146,6 +155,7 @@
             <div class="gift-reveal">Mystery GIFT UNLOCKED!</div>
             <canvas id="scratch-canvas"></canvas>
         </div>
+        <div id="claimMsg">Contact me to claim gift.</div>
     </div>
 
     <audio id="audioWish" src="deg-deg_4M6Cojn.mp3"></audio>
@@ -229,8 +239,15 @@
                 for (let i = 3; i < pixels.length; i += 4) { if (pixels[i] === 0) trans++; }
                 if ((trans / (pixels.length / 4)) > 0.70) {
                     revealed = true;
+                    // Fully clear canvas
                     canvas.style.opacity = '0';
-                    setTimeout(() => canvas.remove(), 500);
+                    setTimeout(() => {
+                        canvas.remove();
+                        const msg = document.getElementById('claimMsg');
+                        msg.style.opacity = "1";
+                        msg.style.transform = "translateY(0)";
+                    }, 500);
+                    
                     document.getElementById('audioReveal').play().catch(() => {});
                     fireConfetti();
                     setTimeout(fireConfetti, 400); 
