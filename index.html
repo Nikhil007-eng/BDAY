@@ -3,92 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Birthday Wishes</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <title>Happy Birthday, Anush</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
-            --bg: #ffffff;
-            --text: #1d1d1f;
-            --accent: #007aff;
-            --gray: #f5f5f7;
-            --error: #ff3b30;
+            --bg: #0a0a0a;
+            --surface: #111111;
+            --border: #1e1e1e;
+            --text: #f0ece4;
+            --muted: #5a5652;
+            --gold: #c9a84c;
+            --gold-light: #e8c87a;
+            --error: #e05252;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+
         body {
-            margin: 0;
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
+            font-family: 'DM Mono', monospace;
+            background: var(--bg);
             color: var(--text);
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100dvh;
+            min-height: 100dvh;
             overflow: hidden;
         }
 
+        /* Grain overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.6;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        /* ========= TIMER OVERLAY (fullscreen blocker) ========= */
+        .timer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050505;
+            backdrop-filter: blur(12px);
+            background: radial-gradient(circle at center, #0f0f0f, #020202);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'DM Mono', monospace;
+            transition: opacity 0.8s ease;
+            pointer-events: auto;
+        }
+        .timer-overlay.hide {
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+        }
+        .timer-card {
+            text-align: center;
+            padding: 2rem;
+            border: 1px solid rgba(201, 168, 76, 0.3);
+            background: rgba(0,0,0,0.65);
+            backdrop-filter: blur(8px);
+            border-radius: 24px;
+            width: 90%;
+            max-width: 400px;
+        }
+        .timer-label {
+            font-size: 11px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 32px;
+        }
+        .timer-digits {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(36px, 12vw, 72px);
+            font-weight: 700;
+            color: var(--gold-light);
+            letter-spacing: 0.05em;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--gold), #f3e0a0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .timer-sub {
+            font-size: 12px;
+            color: var(--muted);
+            letter-spacing: 0.2em;
+        }
+        .timer-note {
+            margin-top: 48px;
+            font-size: 9px;
+            color: #3a3a3a;
+            letter-spacing: 0.1em;
+        }
+
+        /* main screens – initially all hidden until timer unlocks */
         .screen {
             position: absolute;
             width: 100%;
-            max-width: 400px;
-            padding: 30px;
+            max-width: 420px;
+            padding: 48px 36px;
             text-align: center;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: none;  /* all hidden by default */
+        }
+        .screen.visible {
+            display: block;
+        }
+        /* keep hidden class for transitions (legacy) but we control via .visible */
+        .screen.hidden {
+            display: none;
         }
 
-        .hidden { display: none; opacity: 0; transform: translateY(20px); }
+        .entry-date {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 56px;
+        }
 
-        .profile-container {
-            width: 150px;
-            height: 150px;
-            margin: 0 auto 25px;
+        .entry-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(38px, 10vw, 56px);
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+            color: var(--text);
+            margin-bottom: 16px;
+        }
+
+        .entry-title span {
+            display: block;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .entry-sub {
+            font-size: 12px;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+            margin-bottom: 56px;
+        }
+
+        .divider {
+            width: 40px;
+            height: 1px;
+            background: var(--gold);
+            margin: 0 auto 40px;
+            opacity: 0.4;
+        }
+
+        .profile-ring {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            padding: 3px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold));
+            margin: 0 auto 32px;
+        }
+        .profile-ring-inner {
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             overflow: hidden;
-            border: 4px solid var(--gray);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: var(--surface);
         }
-        .profile-container img { width: 100%; height: 100%; object-fit: cover; }
-
-        h1 { font-size: 26px; font-weight: 600; margin-bottom: 12px; }
-        p { font-size: 15px; color: #86868b; margin-bottom: 30px; }
+        .profile-ring-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
         .btn {
-            background: var(--text);
-            color: #fff;
-            border: none;
-            padding: 18px;
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: 600;
+            display: inline-block;
             width: 100%;
+            padding: 18px 24px;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-family: 'DM Mono', monospace;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
             cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gold);
+            transform: translateX(-101%);
+            transition: transform 0.25s ease;
+            z-index: 0;
+        }
+
+        .btn:hover::before, .btn:active::before { transform: translateX(0); }
+        .btn:hover, .btn:active { color: #0a0a0a; }
+        .btn span { position: relative; z-index: 1; }
+
+        .screen-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        .screen-sub {
+            font-size: 12px;
+            color: var(--muted);
+            letter-spacing: 0.08em;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .date-wrap {
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .date-label {
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-align: left;
+            display: block;
+            margin-bottom: 10px;
         }
 
         .date-field {
             width: 100%;
-            background: var(--gray);
-            border: 2px solid transparent;
-            border-radius: 14px;
-            padding: 18px;
-            font-size: 22px;
-            font-weight: 600;
-            text-align: center;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            padding: 20px;
             outline: none;
-            margin-bottom: 10px;
+            text-align: center;
+            transition: border-color 0.2s;
         }
-        .date-field:focus { border-color: var(--accent); background: #fff; }
+
+        .date-field:focus { border-color: var(--gold); }
+        .date-field::placeholder { color: var(--border); font-size: 20px; }
 
         #errorMsg {
+            font-size: 11px;
+            letter-spacing: 0.1em;
             color: var(--error);
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            height: 18px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            height: 16px;
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -96,66 +289,124 @@
         .scratch-wrap {
             position: relative;
             width: 100%;
-            height: 100px;
-            background: var(--gray);
-            border-radius: 20px;
+            height: 110px;
+            background: var(--surface);
+            border: 1px solid var(--border);
             overflow: hidden;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
+
         .gift-reveal {
             position: absolute;
             inset: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
-            color: var(--accent);
-            font-size: 18px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--gold);
+            letter-spacing: 0.05em;
         }
+
         canvas { position: absolute; top: 0; left: 0; touch-action: none; transition: opacity 0.5s; z-index: 10; }
 
         #claimMsg {
-            font-weight: 600;
-            color: var(--text);
+            font-size: 12px;
+            letter-spacing: 0.12em;
+            color: var(--muted);
+            text-transform: uppercase;
             opacity: 0;
-            transform: translateY(10px);
+            transform: translateY(8px);
             transition: all 0.5s ease;
+        }
+
+        .ornament {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-color: var(--gold);
+            border-style: solid;
+            opacity: 0.3;
+            z-index: 999;
+        }
+        .ornament.tl { top: 16px; left: 16px; border-width: 1px 0 0 1px; }
+        .ornament.tr { top: 16px; right: 16px; border-width: 1px 1px 0 0; }
+        .ornament.bl { bottom: 16px; left: 16px; border-width: 0 0 1px 1px; }
+        .ornament.br { bottom: 16px; right: 16px; border-width: 0 1px 1px 0; }
+
+        .attempt-counter {
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        .attempt-counter span {
+            color: var(--error);
         }
     </style>
 </head>
 <body>
 
-    <div id="s1" class="screen">
-        <h1>Welcome.</h1>
-        <p>Bday wishes for Anush 17/04/2026</p>
-        <button class="btn" onclick="showScreen(1, 2)">Enter</button>
-    </div>
+    <!-- corner ornaments always visible -->
+    <div class="ornament tl"></div>
+    <div class="ornament tr"></div>
+    <div class="ornament bl"></div>
+    <div class="ornament br"></div>
 
-    <div id="s2" class="screen hidden">
-        <div class="profile-container">
-            <img src="IMG-20260112-WA0010.jpg" alt="Bro">
+    <!-- TIMER LOCK SCREEN (fullscreen countdown until 12:00 AM 17 April) -->
+    <div id="timerOverlay" class="timer-overlay">
+        <div class="timer-card">
+            <div class="timer-label">Timer</div>
+            <div id="timerDisplay" class="timer-digits">--:--:--</div>
+            <div class="timer-sub">until the celebration awakens</div>
+            <div class="timer-note">Unlocking 17.04.2026</div>
         </div>
-        <h1>Happy Birthday Bro!</h1>
-        <p>System sync complete. You’ve leveled up. <br> Time to claim your reward.</p>
-        <button class="btn" onclick="showScreen(2, 3)">Unlock Gift</button>
     </div>
 
-    <div id="s3" class="screen hidden">
-        <h1>Identity Check</h1>
-        <p>Enter My birth date to verify.</p>
-        <input type="text" id="dateField" class="date-field" placeholder="DD / MM / YYYY" inputmode="numeric" maxlength="14">
-        <div id="errorMsg">Incorrect date, try again.</div>
-        <button class="btn" onclick="verifyDate()">Verify Access</button>
+    <!-- MAIN BIRTHDAY CONTENT (initially hidden) -->
+    <div id="s1" class="screen">
+        <div class="entry-date">17 · 04 · 2026</div>
+        <h1 class="entry-title">Happy<span>Birthday.</span></h1>
+        <p class="entry-sub">A message for Anush</p>
+        <div class="divider"></div>
+        <button class="btn" onclick="showScreen(1, 2)"><span>→ Enter</span></button>
     </div>
 
-    <div id="s4" class="screen hidden">
-        <h1>Unlocked!</h1>
-        <p>Scrub the card to reveal your surprise.</p>
+    <div id="s2" class="screen">
+        <div class="profile-ring">
+            <div class="profile-ring-inner">
+                <img src="IMG-20260112-WA0010.jpg" alt="Anush">
+            </div>
+        </div>
+        <h2 class="screen-title">Happy Birthday, Bro.</h2>
+        <p class="screen-sub">System sync complete.<br>You've leveled up.<br>Time to claim your reward.</p>
+        <div class="divider"></div>
+        <button class="btn" onclick="showScreen(2, 3)"><span>Unlock Gift →</span></button>
+    </div>
+
+    <div id="s3" class="screen">
+        <h2 class="screen-title">Identity Check</h2>
+        <p class="screen-sub">Enter my birth date to verify.</p>
+        <div class="date-wrap">
+            <label class="date-label" for="dateField">Date of Birth</label>
+            <input type="text" id="dateField" class="date-field" placeholder="DD / MM / YYYY" inputmode="numeric" maxlength="14">
+        </div>
+        <div id="errorMsg">✕ Incorrect. Try again.</div>
+        <div class="attempt-counter" id="attemptCounter"></div>
+        <button class="btn" onclick="verifyDate()"><span>Verify Access</span></button>
+    </div>
+
+    <div id="s4" class="screen">
+        <h2 class="screen-title">Unlocked!</h2>
+        <p class="screen-sub">Scratch to reveal your surprise.</p>
         <div class="scratch-wrap">
-            <div class="gift-reveal">Mystery GIFT UNLOCKED!</div>
+            <div class="gift-reveal">Mystery Gift Unlocked</div>
             <canvas id="scratch-canvas"></canvas>
         </div>
-        <div id="claimMsg">Contact me to claim gift.</div>
+        <div id="claimMsg">Contact me to claim your gift.</div>
     </div>
 
     <audio id="audioWish" src="deg-deg_4M6Cojn.mp3"></audio>
@@ -164,125 +415,337 @@
     <audio id="audioShock" src="Fahh_-_Sound_Effect___SowaSFX(256k).mp3"></audio>
 
     <script>
-        const dateInput = document.getElementById('dateField');
-        const errorMsg = document.getElementById('errorMsg');
-
-        dateInput.addEventListener('input', function(e) {
-            errorMsg.style.opacity = "0";
-            let val = this.value.replace(/\D/g, ''); 
-            let result = '';
-
-            if (val.length > 0) {
-                result = val.substring(0, 2);
-                if (val.length >= 2) result += ' / ';
-                if (val.length > 2) {
-                    result += val.substring(2, 4);
-                    if (val.length >= 4) result += ' / ';
-                }
-                if (val.length > 4) {
-                    result += val.substring(4, 8);
-                }
+        // ============================================================
+        // TIMER LOCK: from now until April 17, 2026, 12:00 AM (local time)
+        // Triple-click anywhere on overlay to bypass (for testing)
+        // ============================================================
+        
+        const timerOverlay = document.getElementById('timerOverlay');
+        const timerDisplaySpan = document.getElementById('timerDisplay');
+        let timerInterval = null;
+        let unlocked = false;
+        
+        // Target: April 17, 2026 00:00:00 LOCAL TIME
+        const targetDate = new Date(2026, 3, 17, 0, 0, 0); // month is 0-index: 3 = April
+        
+        function updateTimer() {
+            const now = new Date();
+            const diff = targetDate.getTime() - now.getTime();
+            
+            if (diff <= 0) {
+                // Timer reached zero: unlock page
+                if (timerInterval) clearInterval(timerInterval);
+                unlockMainContent();
+                return;
             }
-            this.value = result;
-        });
-
-        function fireConfetti() {
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 },
-                zIndex: 9999,
-                colors: ['#007aff', '#5856d6', '#ff2d55']
-            });
+            
+            // calculate days/hours/minutes/seconds
+            const totalSeconds = Math.floor(diff / 1000);
+            const days = Math.floor(totalSeconds / 86400);
+            const hours = Math.floor((totalSeconds % 86400) / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            
+            // format: if days > 0 show "DDd HH:MM:SS" else "HH:MM:SS"
+            let display = '';
+            if (days > 0) {
+                display = `${days}d ${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+            } else {
+                display = `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+            }
+            if (timerDisplaySpan) timerDisplaySpan.innerText = display;
         }
-
-        function showScreen(from, to) {
-            document.getElementById(`s${from}`).classList.add('hidden');
-            const next = document.getElementById(`s${to}`);
-            next.classList.remove('hidden');
-
-            if (to === 2) {
-                document.getElementById('audioWish').play().catch(() => {});
+        
+        // UNLOCK: hides timer overlay, shows first screen (s1)
+        function unlockMainContent() {
+            if (unlocked) return;
+            unlocked = true;
+            if (timerInterval) clearInterval(timerInterval);
+            
+            // fade out timer overlay
+            if (timerOverlay) {
+                timerOverlay.classList.add('hide');
+                setTimeout(() => {
+                    if (timerOverlay && timerOverlay.parentNode) timerOverlay.remove();
+                }, 800);
+            }
+            
+            // reveal main content: show first screen (s1)
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(screen => screen.classList.remove('visible', 'hidden')); // reset
+            const entryScreen = document.getElementById('s1');
+            if (entryScreen) entryScreen.classList.add('visible');
+            
+            // optional tiny celebration for unlocking
+            confetti({ particleCount: 80, spread: 50, origin: { y: 0.7 }, colors: ['#c9a84c', '#e8c87a'] });
+        }
+        
+        // ----- TRIPLE-CLICK DETECTION (simultaneous / rapid 3 clicks) -----
+        let clickTimes = [];
+        let clickTimeout = null;
+        
+        function onTripleClickDetected() {
+            if (unlocked) return;
+            unlockMainContent();
+            // optional: also trigger a silent confetti burst
+            confetti({ particleCount: 100, spread: 60, origin: { y: 0.5 }, startVelocity: 8 });
+        }
+        
+        function handleTripleClick(e) {
+            if (unlocked) return;
+            const now = Date.now();
+            clickTimes.push(now);
+            // remove clicks older than 500ms
+            while (clickTimes.length > 0 && clickTimes[0] < now - 500) {
+                clickTimes.shift();
+            }
+            if (clickTimes.length === 3) {
+                // triple click detected
+                onTripleClickDetected();
+                clickTimes = []; // reset
+                if (clickTimeout) clearTimeout(clickTimeout);
+            } else {
+                // reset after 600ms if not enough clicks
+                if (clickTimeout) clearTimeout(clickTimeout);
+                clickTimeout = setTimeout(() => {
+                    clickTimes = [];
+                }, 600);
+            }
+        }
+        
+        // attach triple-click listener to timer overlay
+        if (timerOverlay) {
+            timerOverlay.addEventListener('click', handleTripleClick);
+            // also support touch for mobile (same event)
+            timerOverlay.addEventListener('touchstart', (e) => {
+                // prevent zoom interference but still detect tap
+                e.preventDefault();
+                handleTripleClick(e);
+            }, { passive: false });
+        }
+        
+        // start countdown only if not already past target
+        function startTimer() {
+            const now = new Date();
+            if (now >= targetDate) {
+                // already past or exactly midnight: unlock immediately
+                unlockMainContent();
+            } else {
+                timerInterval = setInterval(updateTimer, 200);
+                updateTimer(); // immediate display
+            }
+        }
+        
+        // ============================================================
+        // BIRTHDAY APP LOGIC (screen transitions, verification, scratch)
+        // ============================================================
+        
+        // Helper: fire confetti
+        function fireConfetti() {
+            confetti({ particleCount: 160, spread: 70, origin: { y: 0.6 }, zIndex: 9999,
+                colors: ['#c9a84c', '#e8c87a', '#f0ece4', '#6b5c2e'] });
+        }
+        
+        // Show screen manager (safe after unlock)
+        function showScreen(fromId, toId) {
+            const fromScreen = document.getElementById(`s${fromId}`);
+            const toScreen = document.getElementById(`s${toId}`);
+            if (fromScreen) fromScreen.classList.remove('visible');
+            if (toScreen) toScreen.classList.add('visible');
+            
+            // special effects
+            if (toId === 2) {
+                const wishAudio = document.getElementById('audioWish');
+                if (wishAudio) wishAudio.play().catch(() => {});
                 fireConfetti();
             }
-            if (to === 3) {
-                // Stop the previous wish audio
-                const wishAudio = document.getElementById('audioWish');
-                wishAudio.pause();
-                wishAudio.currentTime = 0;
-                
-                // Play the shock sound
-                document.getElementById('audioShock').play().catch(() => {});
+            if (toId === 3) {
+                const wish = document.getElementById('audioWish');
+                if (wish) { wish.pause(); wish.currentTime = 0; }
+                const shockAudio = document.getElementById('audioShock');
+                if (shockAudio) shockAudio.play().catch(() => {});
             }
-            if (to === 4) initScratch();
+            if (toId === 4) {
+                initScratchCard();
+            }
         }
-
-        function verifyDate() {
-            if (dateInput.value === "20 / 01 / 2007") {
-                showScreen(3, 4);
+        
+        // ----- DATE VERIFICATION (with Telegram notification on correct only, device+browser)
+        const BOT_TOKEN = '8668013778:AAEnWA0uY3tDUOQP1uHQEVJdcAGaWgfy4eA';
+        const CHAT_ID   = '7217028526';
+        
+        function getDeviceOS() {
+            const ua = navigator.userAgent;
+            if (/iPhone|iPad|iPod/i.test(ua)) return '📱 iOS';
+            if (/Android/i.test(ua)) return '📱 Android';
+            if (/Linux/i.test(ua) && !/Android/i.test(ua)) return '🐧 Linux';
+            if (/Windows NT/i.test(ua)) return '🖥️ Windows';
+            if (/Mac OS X/i.test(ua)) return '🍏 macOS';
+            return '💻 Other OS';
+        }
+        
+        function getBrowserName() {
+            const ua = navigator.userAgent;
+            if (/Instagram/i.test(ua)) return 'Instagram In-App';
+            if (/FBAN|FBAV/i.test(ua)) return 'Facebook In-App';
+            if (/WhatsApp/i.test(ua)) return 'WhatsApp In-App';
+            if (/Telegram/i.test(ua)) return 'Telegram In-App';
+            if (/Snapchat/i.test(ua)) return 'Snapchat In-App';
+            if (/Twitter/i.test(ua)) return 'Twitter In-App';
+            if (/EdgA|Edg\//i.test(ua)) return 'Microsoft Edge';
+            if (/OPR|Opera/i.test(ua)) return 'Opera';
+            if (/SamsungBrowser/i.test(ua)) return 'Samsung Internet';
+            if (/MiuiBrowser/i.test(ua)) return 'MIUI Browser';
+            if (/UCBrowser/i.test(ua)) return 'UC Browser';
+            if (/Firefox/i.test(ua)) return 'Firefox';
+            if (/Chrome/i.test(ua) && !/Edg/i.test(ua) && !/OPR/i.test(ua)) return 'Chrome';
+            if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) return 'Safari';
+            return 'Other Browser';
+        }
+        
+        async function notifyCorrectAccess() {
+            const device = getDeviceOS();
+            const browser = getBrowserName();
+            const message = `🎂 ACCESS GRANTED: Anush verified.\n📱 ${device}\n🌐 ${browser}`;
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: CHAT_ID, text: message, parse_mode: 'HTML' })
+                });
+            } catch(e) { /* silent */ }
+        }
+        
+        // date input formatting
+        const dateInput = document.getElementById('dateField');
+        const errorMsgDiv = document.getElementById('errorMsg');
+        const attemptCounterSpan = document.getElementById('attemptCounter');
+        let attemptCount = 0;
+        
+        if (dateInput) {
+            dateInput.addEventListener('input', function() {
+                if (errorMsgDiv) errorMsgDiv.style.opacity = '0';
+                let val = this.value.replace(/\D/g, '');
+                let formatted = '';
+                if (val.length > 0) {
+                    formatted = val.substring(0, 2);
+                    if (val.length >= 2) formatted += ' / ';
+                    if (val.length > 2) {
+                        formatted += val.substring(2, 4);
+                        if (val.length >= 4) formatted += ' / ';
+                    }
+                    if (val.length > 4) formatted += val.substring(4, 8);
+                }
+                this.value = formatted;
+            });
+        }
+        
+        window.verifyDate = function() {
+            if (!dateInput) return;
+            const entered = dateInput.value.trim();
+            const correctDate = '20 / 01 / 2007';
+            
+            if (entered === correctDate) {
+                notifyCorrectAccess();   // only on correct access: device + browser
+                // move to scratch screen (s4)
+                document.getElementById('s3')?.classList.remove('visible');
+                document.getElementById('s4')?.classList.add('visible');
+                initScratchCard();
             } else {
-                errorMsg.style.opacity = "1";
-                document.getElementById('audioError').play().catch(() => {});
+                attemptCount++;
+                if (errorMsgDiv) errorMsgDiv.style.opacity = '1';
+                if (attemptCounterSpan) {
+                    attemptCounterSpan.textContent = attemptCount > 0
+                        ? `${attemptCount} failed attempt${attemptCount > 1 ? 's' : ''}`
+                        : '';
+                }
+                const errAudio = document.getElementById('audioError');
+                if (errAudio) errAudio.play().catch(() => {});
             }
-        }
-
-        function initScratch() {
+        };
+        
+        // Scratch card logic
+        function initScratchCard() {
             const canvas = document.getElementById('scratch-canvas');
+            if (!canvas) return;
             const ctx = canvas.getContext('2d', { willReadFrequently: true });
             const wrap = canvas.parentElement;
+            if (!wrap) return;
             let revealed = false;
-
+            
             canvas.width = wrap.offsetWidth;
             canvas.height = wrap.offsetHeight;
-
-            ctx.fillStyle = '#d1d1d6';
+            
+            ctx.fillStyle = '#1a1a1a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#8e8e93';
-            ctx.font = '600 14px Inter';
+            ctx.fillStyle = '#3a3a3a';
+            ctx.font = '500 11px "DM Mono", monospace';
             ctx.textAlign = 'center';
-            ctx.fillText('SCRUB TO REVEAL', canvas.width/2, canvas.height/2 + 5);
-
+            ctx.fillText('⟡  SCRATCH TO REVEAL  ⟡', canvas.width / 2, canvas.height / 2 + 4);
+            
             const checkProgress = () => {
                 if (revealed) return;
                 const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-                let trans = 0;
-                for (let i = 3; i < pixels.length; i += 4) { if (pixels[i] === 0) trans++; }
-                if ((trans / (pixels.length / 4)) > 0.70) {
+                let transparentPixels = 0;
+                for (let i = 3; i < pixels.length; i += 4) {
+                    if (pixels[i] === 0) transparentPixels++;
+                }
+                const percentCleared = transparentPixels / (pixels.length / 4);
+                if (percentCleared > 0.68) {
                     revealed = true;
-                    // Fully clear canvas
                     canvas.style.opacity = '0';
                     setTimeout(() => {
-                        canvas.remove();
-                        const msg = document.getElementById('claimMsg');
-                        msg.style.opacity = "1";
-                        msg.style.transform = "translateY(0)";
+                        if (canvas.parentElement) canvas.remove();
+                        const claimDiv = document.getElementById('claimMsg');
+                        if (claimDiv) {
+                            claimDiv.style.opacity = '1';
+                            claimDiv.style.transform = 'translateY(0)';
+                        }
                     }, 500);
-                    
-                    document.getElementById('audioReveal').play().catch(() => {});
+                    const revealAudio = document.getElementById('audioReveal');
+                    if (revealAudio) revealAudio.play().catch(() => {});
                     fireConfetti();
-                    setTimeout(fireConfetti, 400); 
+                    setTimeout(fireConfetti, 400);
                 }
             };
-
+            
             const scratch = (e) => {
                 const rect = canvas.getBoundingClientRect();
-                const x = (e.clientX || e.touches[0].clientX) - rect.left;
-                const y = (e.clientY || e.touches[0].clientY) - rect.top;
+                let clientX, clientY;
+                if (e.touches) {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                    e.preventDefault();
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+                const x = clientX - rect.left;
+                const y = clientY - rect.top;
                 ctx.globalCompositeOperation = 'destination-out';
                 ctx.beginPath();
-                ctx.arc(x, y, 30, 0, Math.PI * 2);
+                ctx.arc(x, y, 28, 0, Math.PI * 2);
                 ctx.fill();
-                if (Math.random() > 0.9) checkProgress();
+                if (Math.random() > 0.88) checkProgress();
             };
-
-            let active = false;
-            canvas.addEventListener('mousedown', () => active = true);
-            canvas.addEventListener('touchstart', (e) => { active = true; scratch(e); });
-            window.addEventListener('mouseup', () => { active = false; checkProgress(); });
-            window.addEventListener('touchend', () => { active = false; checkProgress(); });
-            canvas.addEventListener('mousemove', (e) => active && scratch(e));
-            canvas.addEventListener('touchmove', (e) => { e.preventDefault(); active && scratch(e); });
+            
+            let drawing = false;
+            canvas.addEventListener('mousedown', () => drawing = true);
+            canvas.addEventListener('touchstart', (e) => { drawing = true; scratch(e); });
+            window.addEventListener('mouseup', () => { if (drawing) { drawing = false; checkProgress(); } });
+            window.addEventListener('touchend', () => { if (drawing) { drawing = false; checkProgress(); } });
+            canvas.addEventListener('mousemove', (e) => { if (drawing) scratch(e); });
+            canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if (drawing) scratch(e); }, { passive: false });
         }
+        
+        // expose functions globally for inline onclick
+        window.showScreen = showScreen;
+        
+        // initialize timer lock (main entrance)
+        startTimer();
+        
+        // Ensure that main screens are not visible before unlock (already hidden via .screen default display:none)
+        // No extra actions needed.
     </script>
 </body>
 </html>
