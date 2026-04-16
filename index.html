@@ -206,6 +206,12 @@
                 fireConfetti();
             }
             if (to === 3) {
+                // Stop the previous wish audio
+                const wishAudio = document.getElementById('audioWish');
+                wishAudio.pause();
+                wishAudio.currentTime = 0;
+                
+                // Play the shock sound
                 document.getElementById('audioShock').play().catch(() => {});
             }
             if (to === 4) initScratch();
