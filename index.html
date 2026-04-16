@@ -161,6 +161,7 @@
     <audio id="audioWish" src="deg-deg_4M6Cojn.mp3"></audio>
     <audio id="audioReveal" src="y2mate_xvijLIk.mp3"></audio>
     <audio id="audioError" src="Fahh_-_Sound_Effect___SowaSFX(256k).mp3"></audio>
+    <audio id="audioShock" src="shocked-sound-effect.mp3"></audio>
 
     <script>
         const dateInput = document.getElementById('dateField');
@@ -203,6 +204,9 @@
             if (to === 2) {
                 document.getElementById('audioWish').play().catch(() => {});
                 fireConfetti();
+            }
+            if (to === 3) {
+                document.getElementById('audioShock').play().catch(() => {});
             }
             if (to === 4) initScratch();
         }
