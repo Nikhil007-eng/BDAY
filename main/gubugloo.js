@@ -18,16 +18,11 @@
 // ─────────────────────────────────────────────────────────
 
 const D1 = [
-    // "ENCODEDPHONE#ENCODEDID#password",
-    // Example (inactive — replace with real entries):
-    // "XAYGTUZNBE#XEABTX#demo123"
-    "ZGNYYGGYUB#NEUGAX#vignesh@2013"
+"ZGNYYGGYUB#NEUGAX#vignesh@2013"
+
 ];
 
 const D2 = [
-    // "Name#Door, Street, Area, City",
-    // Example (inactive — replace with real entries):
-    // "Demo User#12, Main Street, Gandhi Nagar, Harapanahalli"
     "Vignesh B#171/5, Banagarpet, Tammany hunse mara, Harapanahalli"
-];
 
+];
