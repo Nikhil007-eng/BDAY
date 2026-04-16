@@ -3,228 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XOS | Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Birthday Wishes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
-            --bg: #000000;
+            --bg: #ffffff;
+            --text: #1d1d1f;
             --accent: #007aff;
-            --card-bg: #0a0a0a;
-            --border: #1a1a1a;
-            --text: #f5f5f7;
-            --dim: #8a8a9e;
+            --gray: #f5f5f7;
+            --error: #ff3b30;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         body {
-            min-height: 100vh;
-            background: var(--bg);
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
             color: var(--text);
-            font-family: 'Space Grotesk', sans-serif;
             display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-            overflow-y: auto; /* Swipe up enabled */
-        }
-
-        /* Identity Screen */
-        #page-1 {
-            display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            padding: 20px;
+            height: 100dvh;
+            overflow: hidden;
         }
 
-        .auth-card {
+        .screen {
+            position: absolute;
             width: 100%;
-            max-width: 360px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 40px 20px;
+            max-width: 400px;
+            padding: 30px;
             text-align: center;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .auth-input {
-            width: 100%;
-            background: #000;
-            border: 1px solid var(--border);
-            padding: 18px;
-            color: #fff;
-            border-radius: 8px;
-            margin: 20px 0;
-            font-family: inherit;
-            font-size: 1rem;
-            outline: none;
-            text-align: center;
+        .hidden { display: none; opacity: 0; transform: translateY(20px); }
+
+        .profile-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid var(--gray);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
+        .profile-container img { width: 100%; height: 100%; object-fit: cover; }
 
-        .auth-input:focus { border-color: var(--accent); }
+        h1 { font-size: 26px; font-weight: 600; margin-bottom: 12px; }
+        p { font-size: 15px; color: #86868b; margin-bottom: 30px; }
 
-        .btn-main {
-            width: 100%;
-            background: var(--accent);
+        .btn {
+            background: var(--text);
             color: #fff;
             border: none;
             padding: 18px;
-            border-radius: 8px;
+            border-radius: 14px;
+            font-size: 16px;
             font-weight: 600;
+            width: 100%;
             cursor: pointer;
         }
 
-        /* Wish Section */
-        #page-2 {
-            display: none;
+        .date-field {
             width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 15px;
-            opacity: 0;
-            animation: xos-slide-up 0.8s cubic-bezier(0.2, 1, 0.3, 1) forwards;
-        }
-
-        @keyframes xos-slide-up {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* FIXED: Ratio-consistent Full Photo */
-        .full-photo {
-            width: 100%;
-            height: auto; /* Maintains original aspect ratio */
-            display: block;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            margin-bottom: 20px;
-        }
-
-        .wish-content {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 30px 20px;
+            background: var(--gray);
+            border: 2px solid transparent;
+            border-radius: 14px;
+            padding: 18px;
+            font-size: 22px;
+            font-weight: 600;
             text-align: center;
-            margin-bottom: 50px;
+            outline: none;
+            margin-bottom: 10px;
         }
+        .date-field:focus { border-color: var(--accent); background: #fff; }
 
-        .wish-title {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--accent);
-            line-height: 1.1;
+        #errorMsg {
+            color: var(--error);
+            font-size: 13px;
+            font-weight: 600;
             margin-bottom: 15px;
+            height: 18px;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
-        .note-box {
-            margin-top: 15px;
-            padding: 15px;
-            background: rgba(255,255,255,0.02);
-            border-radius: 8px;
-            text-align: left;
-            border-left: 2px solid var(--accent);
+        .scratch-wrap {
+            position: relative;
+            width: 100%;
+            height: 100px;
+            background: var(--gray);
+            border-radius: 20px;
+            overflow: hidden;
         }
-
-        .footer {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--dim);
-            font-size: 0.7rem;
-            letter-spacing: 1px;
+        .gift-reveal {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--accent);
+            font-size: 18px;
         }
+        canvas { position: absolute; top: 0; left: 0; touch-action: none; transition: opacity 0.5s; z-index: 10; }
     </style>
 </head>
 <body>
 
-    <div id="page-1">
-        <div class="auth-card">
-            <h2 style="font-size: 1rem; color: var(--dim); letter-spacing: 2px;">XOS ACCESS</h2>
-            <input type="text" id="nameInput" class="auth-input" placeholder="Enter Name" autocomplete="off">
-            <button class="btn-main" onclick="reveal()">VIEW WISH</button>
+    <div id="s1" class="screen">
+        <h1>Welcome.</h1>
+        <p>Bday wishes for Anush 17/04/2026</p>
+        <button class="btn" onclick="showScreen(1, 2)">Enter</button>
+    </div>
+
+    <div id="s2" class="screen hidden">
+        <div class="profile-container">
+            <img src="YOUR_IMAGE_LINK" alt="Bro">
+        </div>
+        <h1>Happy Birthday!</h1>
+        <p>System sync complete. You’ve leveled up. <br> Time to claim your reward.</p>
+        <button class="btn" onclick="showScreen(2, 3)">Unlock Gift</button>
+    </div>
+
+    <div id="s3" class="screen hidden">
+        <h1>Identity Check</h1>
+        <p>Enter My birth date to verify.</p>
+        <input type="text" id="dateField" class="date-field" placeholder="DD / MM / YYYY" inputmode="numeric" maxlength="14">
+        <div id="errorMsg">Incorrect date, try again.</div>
+        <button class="btn" onclick="verifyDate()">Verify Access</button>
+    </div>
+
+    <div id="s4" class="screen hidden">
+        <h1>Unlocked!</h1>
+        <p>Scrub the card to reveal your surprise.</p>
+        <div class="scratch-wrap">
+            <div class="gift-reveal">Mystery GIFT UNLOCKED!</div>
+            <canvas id="scratch-canvas"></canvas>
         </div>
     </div>
 
-    <div id="page-2">
-        <div style="padding-top: 10px;">
-            <img id="mainPhoto" class="full-photo" src="" alt="Birthday Image">
-            
-            <div class="wish-content">
-                <div class="wish-title" id="titleText"></div>
-                <div style="font-size: 2.5rem; margin-bottom: 20px;">🎁</div>
-                
-                <div class="note-box">
-                    <p id="typewriter" style="font-size: 1.1rem; color: var(--text);"></p>
-                </div>
-            </div>
-
-            <div class="footer">
-                <p>APRIL 01, 2026</p>
-                <p style="margin-top: 10px; opacity: 0.5;">XOS INT // SECURE PORTAL</p>
-            </div>
-        </div>
-    </div>
+    <audio id="audioWish" src="YOUR_WISH_AUDIO.mp3"></audio>
+    <audio id="audioReveal" src="YOUR_REVEAL_AUDIO.mp3"></audio>
+    <audio id="audioError" src="YOUR_ERROR_AUDIO.mp3"></audio>
 
     <script>
-        const audio = new Audio('y2mate_xvijLIk.mp3');
+        const dateInput = document.getElementById('dateField');
+        const errorMsg = document.getElementById('errorMsg');
 
-        function reveal() {
-            const name = document.getElementById('nameInput').value.trim().toLowerCase();
-            const p1 = document.getElementById('page-1');
-            const p2 = document.getElementById('page-2');
-            const img = document.getElementById('mainPhoto');
-            const title = document.getElementById('titleText');
+        dateInput.addEventListener('input', function(e) {
+            errorMsg.style.opacity = "0";
+            let val = this.value.replace(/\D/g, ''); 
+            let result = '';
 
-            if (name === "neeraj" || name === "niru") {
-                img.src = "file_00000000759071fd8f43f739149405ee.png";
-                title.innerHTML = "HAPPY BIRTHDAY BRO";
-                startFlow(p1, p2, "Happy Birthday Bro. God bless you.");
-            } 
-            else if (name === "harshita") {
-                img.src = "file_00000000fb9471f8b4d7f50986904d84.png";
-                title.innerHTML = "HAPPY BIRTHDAY SIS";
-                startFlow(p1, p2, "Happy Birthday Sis. God bless you.");
-            } 
-            else {
-                alert("Name not recognized.");
-            }
-        }
-
-        function startFlow(hide, show, msg) {
-            hide.style.display = 'none';
-            show.style.display = 'block';
-            
-            audio.play().catch(() => {});
-            confetti({
-                particleCount: 150,
-                spread: 60,
-                origin: { y: 0.7 },
-                colors: ['#007aff', '#ffffff']
-            });
-
-            let i = 0;
-            const target = document.getElementById('typewriter');
-            function type() {
-                if (i < msg.length) {
-                    target.innerHTML += msg.charAt(i);
-                    i++;
-                    setTimeout(type, 50);
+            if (val.length > 0) {
+                result = val.substring(0, 2);
+                if (val.length >= 2) result += ' / ';
+                if (val.length > 2) {
+                    result += val.substring(2, 4);
+                    if (val.length >= 4) result += ' / ';
+                }
+                if (val.length > 4) {
+                    result += val.substring(4, 8);
                 }
             }
-            type();
+            this.value = result;
+        });
+
+        function fireConfetti() {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                zIndex: 9999,
+                colors: ['#007aff', '#5856d6', '#ff2d55']
+            });
         }
 
-        document.getElementById('nameInput').addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') reveal();
-        });
+        function showScreen(from, to) {
+            document.getElementById(`s${from}`).classList.add('hidden');
+            const next = document.getElementById(`s${to}`);
+            next.classList.remove('hidden');
+
+            if (to === 2) {
+                document.getElementById('audioWish').play().catch(() => {});
+                fireConfetti();
+            }
+            if (to === 4) initScratch();
+        }
+
+        function verifyDate() {
+            if (dateInput.value === "20 / 01 / 2007") {
+                showScreen(3, 4);
+            } else {
+                errorMsg.style.opacity = "1";
+                document.getElementById('audioError').play().catch(() => {});
+            }
+        }
+
+        function initScratch() {
+            const canvas = document.getElementById('scratch-canvas');
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            const wrap = canvas.parentElement;
+            let revealed = false;
+
+            canvas.width = wrap.offsetWidth;
+            canvas.height = wrap.offsetHeight;
+
+            ctx.fillStyle = '#d1d1d6';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#8e8e93';
+            ctx.font = '600 14px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText('SCRUB TO REVEAL', canvas.width/2, canvas.height/2 + 5);
+
+            const checkProgress = () => {
+                if (revealed) return;
+                const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+                let trans = 0;
+                for (let i = 3; i < pixels.length; i += 4) { if (pixels[i] === 0) trans++; }
+                if ((trans / (pixels.length / 4)) > 0.70) {
+                    revealed = true;
+                    canvas.style.opacity = '0';
+                    setTimeout(() => canvas.remove(), 500);
+                    document.getElementById('audioReveal').play().catch(() => {});
+                    fireConfetti();
+                    setTimeout(fireConfetti, 400); 
+                }
+            };
+
+            const scratch = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = (e.clientX || e.touches[0].clientX) - rect.left;
+                const y = (e.clientY || e.touches[0].clientY) - rect.top;
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.beginPath();
+                ctx.arc(x, y, 30, 0, Math.PI * 2);
+                ctx.fill();
+                if (Math.random() > 0.9) checkProgress();
+            };
+
+            let active = false;
+            canvas.addEventListener('mousedown', () => active = true);
+            canvas.addEventListener('touchstart', (e) => { active = true; scratch(e); });
+            window.addEventListener('mouseup', () => { active = false; checkProgress(); });
+            window.addEventListener('touchend', () => { active = false; checkProgress(); });
+            canvas.addEventListener('mousemove', (e) => active && scratch(e));
+            canvas.addEventListener('touchmove', (e) => { e.preventDefault(); active && scratch(e); });
+        }
     </script>
 </body>
 </html>
