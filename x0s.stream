@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>x0s.stream | AMOLED</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #000000;
+            --accent-green: #22c55e;
+            --white-glass: rgba(255, 255, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* Glass Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 24px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
+
+        .logo span { color: var(--accent-green); }
+
+        .dev-btn {
+            background: transparent;
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .dev-btn:hover {
+            background: var(--accent-green);
+            color: #000;
+        }
+
+        /* Grid - 2 columns */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 16px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Glass Card */
+        .movie-card {
+            background: var(--white-glass);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .movie-card:active {
+            transform: scale(0.96);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .poster {
+            width: 100%;
+            aspect-ratio: 2/3;
+            background: #111;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .meta {
+            padding: 12px;
+            text-align: center;
+        }
+
+        .movie-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Player Overlay */
+        #player-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 2000;
+        }
+
+        #close-player {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 24px;
+            z-index: 2001;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">x0s<span>.stream</span></div>
+        <button class="dev-btn">Developer</button>
+    </header>
+
+    <div class="grid" id="grid">
+        </div>
+
+    <div id="player-overlay">
+        <div id="close-player">✕</div>
+        <iframe id="video-frame" src="" allow="autoplay; fullscreen"></iframe>
+    </div>
+
+    <script>
+        // Data logic
+        const content = [
+            {
+                d1: "https://www.imdb.com/title/tt39139925/", 
+                d2: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+            },
+            {
+                d1: "https://www.imdb.com/title/tt0468569/", 
+                d2: "https://www.youtube.com/embed/EXeTwQWrcwY"
+            }
+        ];
+
+        const CORS_PROXY = "https://api.allorigins.win/get?url=";
+
+        async function fetchInfo(url) {
+            try {
+                const response = await fetch(`${CORS_PROXY}${encodeURIComponent(url)}`);
+                const json = await response.json();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(json.contents, 'text/html');
+                
+                const title = doc.querySelector('meta[property="og:title"]')?.content.split(' (')[0] || "Unknown Movie";
+                const img = doc.querySelector('meta[property="og:image"]')?.content || "";
+                
+                return { title, img };
+            } catch (e) {
+                return { title: "Error Fetching", img: "https://via.placeholder.com/300x450?text=Error" };
+            }
+        }
+
+        async function init() {
+            const grid = document.getElementById('grid');
+            
+            for (const item of content) {
+                const data = await fetchInfo(item.d1);
+                
+                const card = document.createElement('div');
+                card.className = 'movie-card';
+                card.innerHTML = `
+                    <img src="${data.img}" class="poster" alt="Poster">
+                    <div class="meta">
+                        <p class="movie-name">${data.title}</p>
+                    </div>
+                `;
+                
+                card.onclick = () => {
+                    const overlay = document.getElementById('player-overlay');
+                    const frame = document.getElementById('video-frame');
+                    frame.src = item.d2;
+                    overlay.style.display = 'block';
+                    
+                    // Request landscape fullscreen
+                    if (overlay.requestFullscreen) overlay.requestFullscreen();
+                    if (screen.orientation && screen.orientation.lock) {
+                        screen.orientation.lock('landscape').catch(() => {});
+                    }
+                };
+                
+                grid.appendChild(card);
+            }
+        }
+
+        document.getElementById('close-player').onclick = () => {
+            const overlay = document.getElementById('player-overlay');
+            document.getElementById('video-frame').src = "";
+            overlay.style.display = 'none';
+            if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+        };
+
+        init();
+    </script>
+</body>
+</html>
